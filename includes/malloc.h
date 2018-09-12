@@ -6,18 +6,31 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 09:07:48 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/11 16:46:38 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/12 14:51:28 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MALLOC_H
 # define MALLOC_H
 
+# define TINY_MIN 4
+# define TINY_MAX 12
+# define SMALL_MIN 10
+# define SMALL_MAX 20
+
 # include "libft.h"
 # include <stdio.h>
 # include <unistd.h>
 # include <sys/mman.h>
 # include <limits.h>
+
+typedef struct		s_alloc
+{
+	void		*zn;
+	void		**table;
+	int			min;
+	int			max;
+}					t_alloc;
 
 typedef struct		s_head
 {

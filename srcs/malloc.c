@@ -6,27 +6,37 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 09:07:14 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/11 16:50:13 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/12 14:53:03 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
 
-void	write_header(void **table, void *bl, char fr, int bl_size)
+void	write_header_in_table(t_alloc *alc, void *bl, int bl_size)
 {
 	int		ind;
 	int		s;
+	int		i;
+	int		len;
 
+	ind = power_of_two_ind(bl_size);
+	s = sum_power_of_two(alc->min, ind);
+	i = 1;
+	len = power_of_two(alc->max - ind);
+	while (s - i >= 0 && i <= len && (alc->table)[s - i] != NULL)
+		i++;
+	alc->table[s - i] = bl;
+}
+
+
+void	write_header(t_alloc *alc, void *bl, char fr, int bl_size)
+{
 	if (!bl || bl_size < (int)sizeof(t_head))
 		printf("ho ho !\n");
 	((t_head *)bl)->sym = '*';
 	((t_head *)bl)->free = fr;
 	((t_head *)bl)->size = bl_size;
-	ind = power_of_two_ind(bl_size);
-	s = sum_power_of_two(4, ind);
-	printf("HEY %d\n", s-1);
-	table[s - 1] = (void *)0xFFFFFFFFFFFFFFFF;
-	print_mem((char *)table, s * (int)sizeof(void *));
+	write_header_in_table(alc, bl, bl_size);
 }
 
 
@@ -40,43 +50,50 @@ void	*get_new_zone(int zn_size)
 	return(zn);
 }
 
-void	*make_table(int zn_size)
+void	make_table(t_alloc *alc)
 {
 	int		ind;
 	int		nb;
 	int		size;
 	void	**table;
 
-	ind = power_of_two_ind(zn_size);
-	nb = sum_power_of_two(4, ind);
+	ind = alc->max;
+	nb = sum_power_of_two(alc->min, ind);
 	size = nb * (int)sizeof(void *);
 	printf("table size: %d\n", size);
 	table = mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
 	if (!table)
 		printf("zut!\n");
 	memset(table, 0, size);
-	return(table);
+	alc->table = table;
 }
 
-void	ini_alloc(int pow)
+void		make_alloc(t_alloc *alc, int min, int max)
 {
 	void    *zn;
 	int     zn_size;
-	void	*table;
 
-	zn_size = getpagesize() * power_of_two(pow);
+	alc->min = min;
+	alc->max = max;
+	//TODO multiple of getpagesize()
+	zn_size = power_of_two(max);
 	printf("zone_size: %d\n", zn_size);
 	zn = get_new_zone(zn_size);
-	table = make_table(zn_size);
-	write_header(table, zn, 1, zn_size);
-	printf("block_size: %d\n", ((t_head *)zn)->size);
-	printf("free %hhd\n", ((t_head *)zn)->free);
-	printf("%c\n", ((char *)zn)[0]);
-	printf("%d\n", power_of_two_ind(zn_size));
+	alc->zn = zn;
+	make_table(alc);
+	write_header(alc, zn, 1, zn_size);
+}
+
+void	ini_alloc()
+{
+	t_alloc		alc[2];
+
+	make_alloc(&(alc[0]), TINY_MIN, TINY_MAX);
+	make_alloc(&(alc[1]), SMALL_MIN, SMALL_MAX);
 }
 
 int		main()
 {
-	ini_alloc(0);
+	ini_alloc();
 	return(0);
 }
