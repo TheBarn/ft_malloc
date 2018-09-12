@@ -6,18 +6,16 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/12 15:58:31 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/12 18:01:01 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/12 18:39:54 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
 
-int		find_seq_start(t_alloc *alc, int bl_size)
+int		find_seq_start(t_alloc *alc, int ind)
 {
-	int		ind;
 	int		s;
 
-	ind = power_of_two_ind(bl_size);
 	s = sum_power_of_two(alc->max - ind + 1, alc->max - alc->min);
 	return(s);
 }
@@ -30,7 +28,7 @@ int		write_header_in_table(t_alloc *alc, void *bl, int bl_size)
 	int		ind;
 
 	ind = power_of_two_ind(bl_size);
-	s = find_seq_start(alc, bl_size);
+	s = find_seq_start(alc, ind);
 	i = 0;
 	len = power_of_two(alc->max - ind);
 	while (i < len && (alc->table)[s + i] != NULL)
