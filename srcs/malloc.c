@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 09:07:14 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/12 18:46:59 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/12 18:56:04 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,7 @@ int		find_block_index(t_alloc *alc, int fit)
 
 	s = find_seq_start(alc, fit);
 	i = 0;
-	len = sum_power_of_two(0, fit);
-	dump_table(alc);
+	len = sum_power_of_two(0, alc->max - fit);
 	bl = NULL;
 	while (i < len)
 	{
@@ -106,6 +105,7 @@ void	*ft_malloc(t_alloc *g_alc, int size)
 	fit = find_fit(alc, size);
 	ind = find_block_index(alc, fit);
 	bl = split_block(alc, ind, fit);
+	dump_table(alc);
 	return (bl);
 }
 
@@ -115,6 +115,7 @@ int		main()
 	alc = ini_alloc();
 	ft_malloc(alc, 500);
 	ft_malloc(alc, 32);
-	dump_table(&(alc[0]));
+	ft_malloc(alc, 8);
+	ft_malloc(alc, 260);
 	return(0);
 }
