@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/12 15:58:31 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/12 16:51:22 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/12 18:01:01 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int		find_seq_start(t_alloc *alc, int bl_size)
 	return(s);
 }
 
-void	write_header_in_table(t_alloc *alc, void *bl, int bl_size)
+int		write_header_in_table(t_alloc *alc, void *bl, int bl_size)
 {
 	int		s;
 	int		i;
@@ -38,17 +38,21 @@ void	write_header_in_table(t_alloc *alc, void *bl, int bl_size)
 	if (i == len)
 		printf("OMG no memory left\n");
 	alc->table[s + i] = bl;
+	return (s + i);
 }
 
 
-void	write_header(t_alloc *alc, void *bl, char fr, int bl_size)
+int		write_header(t_alloc *alc, void *bl, char fr, int bl_size)
 {
+	int		ind;
+
 	if (!bl || bl_size < (int)sizeof(t_head))
 		printf("ho ho !\n");
 	((t_head *)bl)->sym = SYM;
 	((t_head *)bl)->free = fr;
 	((t_head *)bl)->size = bl_size;
-	write_header_in_table(alc, bl, bl_size);
+	ind = write_header_in_table(alc, bl, bl_size);
+	return (ind);
 }
 
 

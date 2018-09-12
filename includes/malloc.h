@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 09:07:48 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/12 16:48:54 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/12 17:59:18 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 # include <unistd.h>
 # include <sys/mman.h>
 # include <limits.h>
+# include <stdint.h>
 
 typedef struct		s_alloc
 {
@@ -46,8 +47,7 @@ int		power_of_two_ind(int num);
 int		sum_power_of_two(int start,int end);
 void	print_mem(char *ptr, int size);
 void	dump_table(t_alloc *alc);
-void    write_header_in_table(t_alloc *alc, void *bl, int bl_size);
-void    write_header(t_alloc *alc, void *bl, char fr, int bl_size);
+int		write_header(t_alloc *alc, void *bl, char fr, int bl_size);
 t_alloc     *ini_alloc(void);
 int     find_seq_start(t_alloc *alc, int bl_size);
 

@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 09:07:14 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/12 16:50:36 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/12 18:22:29 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int		find_fit(t_alloc *alc, int size)
 }
 
 //make first always there?
-void	*find_available_block(t_alloc *alc, int fit)
+int		find_block_index(t_alloc *alc, int fit)
 {
 	int		s;
 	int		len;
@@ -52,15 +52,38 @@ void	*find_available_block(t_alloc *alc, int fit)
 	}
 	if (bl == NULL)
 		printf("oh no, no block avalaible");
-	return(bl);
+	return(s + i);
 }
 
-void	*find_block(t_alloc *alc, int fit)
+void	*find_buddy(void *bl)
+{
+	uintptr_t 	bud;
+	t_head		*h;
+
+	h = (t_head *)bl;
+	bud = (uintptr_t)h ^ h->size;
+	return ((void *)bud);
+}
+
+// do I really need to store free and sym?
+void	*split_block(t_alloc *alc, int ind, int fit)
 {
 	void	*bl;
+	int		bl_size;
+	void	*bud;
 
-	bl = find_available_block(alc, fit);
-	printf("BLOCK %p\n", bl);
+	bl = alc->table[ind];
+	bl_size = ((t_head *)bl)->size;
+	if (fit == power_of_two_ind(bl_size))
+	{
+		((t_head *)bl)->free = 0;
+		return (bl);
+	}
+	alc->table[ind] = NULL;
+	ind = write_header(alc, bl, 1, bl_size / 2);
+	bud = find_buddy(bl);
+	write_header(alc, bud, 1, bl_size / 2);
+	bl = split_block(alc, ind, fit);
 	return (bl);
 }
 
@@ -69,6 +92,7 @@ void	*ft_malloc(t_alloc *g_alc, int size)
 {
 	t_alloc *alc;
 	int		fit;
+	int		ind;
 	void	*bl;
 
 	if (size < power_of_two(10))
@@ -76,7 +100,8 @@ void	*ft_malloc(t_alloc *g_alc, int size)
 	else
 		alc = &(g_alc[1]);
 	fit = find_fit(alc, size);
-	bl = find_block(alc, fit);
+	ind = find_block_index(alc, fit);
+	bl = split_block(alc, ind, fit);
 	return (bl);
 }
 
@@ -84,7 +109,8 @@ int		main()
 {
 	t_alloc		*alc;
 	alc = ini_alloc();
-	dump_table(&(alc[0]));
 	ft_malloc(alc, 500);
+	ft_malloc(alc, 32);
+	dump_table(&(alc[0]));
 	return(0);
 }

@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 16:45:08 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/12 15:26:46 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/12 18:21:29 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ void	dump_table(t_alloc *alc)
 	int		i;
 	int		j;
 	int		start;
+	void	*bl;
 
 	i = alc->min;
 	start = 0;
@@ -28,8 +29,13 @@ void	dump_table(t_alloc *alc)
 		j = 0;
 		while (j < len)
 		{
-//			printf("i : %d\n", start + j);
-			printf("%p ", alc->table[start + j]);
+			bl = alc->table[start + j];
+			if (bl && ((t_head *)bl)->free == 1)
+				printf("\033[32m%p\033[0m ", bl);
+			else if (bl && ((t_head *)bl)->free == 0)
+				printf("\033[31m%p\033[0m ", bl);
+			else
+				printf("%p ", bl);
 			j++;
 		}
 		printf("\n");
