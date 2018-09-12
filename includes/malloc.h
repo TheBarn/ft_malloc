@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 09:07:48 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/12 14:51:28 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/12 15:21:13 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,5 +43,6 @@ int		power_of_two(int pow);
 int		power_of_two_ind(int num);
 int		sum_power_of_two(int start,int end);
 void	print_mem(char *ptr, int size);
+void	dump_table(t_alloc *alc);
 
 #endif

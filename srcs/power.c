@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 16:34:10 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/11 16:43:30 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/12 15:35:51 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,5 @@ int		sum_power_of_two(int start, int end)
 		nb += power_of_two(start);
 		start++;
 	}
-	printf("start 4 end %d result %d\n", end, nb);
 	return nb;
 }
