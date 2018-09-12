@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 09:07:14 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/12 18:39:52 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/12 18:46:59 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,22 +36,26 @@ int		find_block_index(t_alloc *alc, int fit)
 	s = find_seq_start(alc, fit);
 	i = 0;
 	len = sum_power_of_two(0, fit);
+	dump_table(alc);
 	bl = NULL;
 	while (i < len)
 	{
 		if (alc->table[s + i])
 		{
 			h = (t_head *)(alc->table[s + i]);
+			//find better place for checks
 			if (h->sym != SYM)
 				printf("What are you doing?\n");
 			if (h->free == 1)
+			{
 				bl = alc->table[s + i];
 				break;
+			}
 		}
 		i++;
 	}
 	if (bl == NULL)
-		printf("oh no, no block avalaible");
+		printf("oh no, no block avalaible\n");
 	return(s + i);
 }
 
