@@ -6,99 +6,85 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 09:07:14 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/12 15:45:09 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/12 16:50:36 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
 
-void	write_header_in_table(t_alloc *alc, void *bl, int bl_size)
+int		find_fit(t_alloc *alc, int size)
 {
-	int		ind;
+	int		fit;
+
+	fit = alc->min;
+	while (power_of_two(fit) - HEAD_SIZE < size && fit < alc->max)
+		fit++;
+	if (power_of_two(fit) - HEAD_SIZE < size)
+		printf("Grr zone not big enough\n");
+	return (fit);
+}
+
+//make first always there?
+void	*find_available_block(t_alloc *alc, int fit)
+{
 	int		s;
-	int		i;
 	int		len;
+	int		i;
+	t_head	*h;
+	void	*bl;
 
-	ind = power_of_two_ind(bl_size);
-	s = sum_power_of_two(alc->max - ind + 1, alc->max - alc->min);
+	s = find_seq_start(alc, fit);
 	i = 0;
-	len = power_of_two(alc->max - ind);
-	while (i < len && (alc->table)[s + i] != NULL)
+	len = sum_power_of_two(0, fit);
+	bl = NULL;
+	while (i < len)
+	{
+		if (alc->table[s + i])
+		{
+			h = (t_head *)(alc->table[s + i]);
+			if (h->sym != SYM)
+				printf("What are you doing?\n");
+			if (h->free == 1)
+				bl = alc->table[s + i];
+				break;
+		}
 		i++;
-	if (i == len)
-		printf("OMG no memory left\n");
-	alc->table[s + i] = bl;
-	printf("IND: %d\n", s + i);
-	printf("PTR: %p\n", alc->table[s + i]);
+	}
+	if (bl == NULL)
+		printf("oh no, no block avalaible");
+	return(bl);
 }
 
-
-void	write_header(t_alloc *alc, void *bl, char fr, int bl_size)
+void	*find_block(t_alloc *alc, int fit)
 {
-	if (!bl || bl_size < (int)sizeof(t_head))
-		printf("ho ho !\n");
-	((t_head *)bl)->sym = '*';
-	((t_head *)bl)->free = fr;
-	((t_head *)bl)->size = bl_size;
-	write_header_in_table(alc, bl, bl_size);
+	void	*bl;
+
+	bl = find_available_block(alc, fit);
+	printf("BLOCK %p\n", bl);
+	return (bl);
 }
 
-
-void	*get_new_zone(int zn_size)
+//TODO	size_t
+void	*ft_malloc(t_alloc *g_alc, int size)
 {
-	void	*zn;
+	t_alloc *alc;
+	int		fit;
+	void	*bl;
 
-	zn = mmap(NULL, zn_size, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
-	if (!zn)
-		printf("adios amigos\n");
-	return(zn);
-}
-
-void	make_table(t_alloc *alc)
-{
-	int		ind;
-	int		nb;
-	int		size;
-	void	**table;
-
-	ind = alc->max;
-	nb = sum_power_of_two(alc->min, ind);
-	size = nb * (int)sizeof(void *);
-	printf("table size: %d\n", size);
-	table = mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
-	if (!table)
-		printf("zut!\n");
-	memset(table, 0, size);
-	alc->table = table;
-}
-
-void		make_alloc(t_alloc *alc, int min, int max)
-{
-	void    *zn;
-	int     zn_size;
-
-	alc->min = min;
-	alc->max = max;
-	//TODO multiple of getpagesize()
-	zn_size = power_of_two(max);
-	printf("zone_size: %d\n", zn_size);
-	zn = get_new_zone(zn_size);
-	alc->zn = zn;
-	make_table(alc);
-	write_header(alc, zn, 1, zn_size);
-	dump_table(alc);
-}
-
-void	ini_alloc()
-{
-	t_alloc		alc[2];
-
-	make_alloc(&(alc[0]), TINY_MIN, TINY_MAX);
-//	make_alloc(&(alc[1]), SMALL_MIN, SMALL_MAX);
+	if (size < power_of_two(10))
+		alc = &(g_alc[0]);
+	else
+		alc = &(g_alc[1]);
+	fit = find_fit(alc, size);
+	bl = find_block(alc, fit);
+	return (bl);
 }
 
 int		main()
 {
-	ini_alloc();
+	t_alloc		*alc;
+	alc = ini_alloc();
+	dump_table(&(alc[0]));
+	ft_malloc(alc, 500);
 	return(0);
 }

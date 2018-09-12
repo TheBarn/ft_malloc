@@ -6,7 +6,7 @@
 #    By: barnout <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/09/11 09:10:24 by barnout           #+#    #+#              #
-#    Updated: 2018/09/11 16:44:53 by barnout          ###   ########.fr        #
+#    Updated: 2018/09/12 15:59:13 by barnout          ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 
@@ -21,7 +21,7 @@ LIBFT_A = ./libft/libftprintf.a
 INC_DIR = ./includes
 C_FLAGS = -Wall -Wextra -Werror
 I_FLAGS = -I$(INC_DIR) -I$(LIBFT)
-SRC = malloc.c power.c dump.c
+SRC = malloc.c power.c dump.c ini.c
 O_DIR = ./objs
 S_DIR = ./srcs
 INCLUDES = malloc.h
