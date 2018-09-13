@@ -6,12 +6,13 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 09:07:14 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/13 11:06:12 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/13 16:05:19 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
 
+//TODO manage which zone to use according to size of malloc
 int		find_fit(t_alloc *alc, int size)
 {
 	int		fit;
@@ -19,12 +20,9 @@ int		find_fit(t_alloc *alc, int size)
 	fit = alc->min;
 	while (power_of_two(fit) - HEAD_SIZE < size && fit < alc->max)
 		fit++;
-	if (power_of_two(fit) - HEAD_SIZE < size)
-		printf("Grr zone not big enough\n");
 	return (fit);
 }
 
-//make first always there?
 int		find_block_index(t_alloc *alc, int fit)
 {
 	int		s;
@@ -42,9 +40,6 @@ int		find_block_index(t_alloc *alc, int fit)
 		if (alc->table[s + i])
 		{
 			h = (t_head *)(alc->table[s + i]);
-			//find better place for checks
-			if (h->sym != SYM)
-				printf("What are you doing?\n");
 			if (h->free == 1)
 			{
 				bl = alc->table[s + i];
@@ -53,8 +48,9 @@ int		find_block_index(t_alloc *alc, int fit)
 		}
 		i++;
 	}
+	//TODO allocate new zone if not enough space in zone ??
 	if (bl == NULL)
-		printf("oh no, no block avalaible\n");
+		printf("Error: need to allocate a new zone\n");
 	return(s + i);
 }
 
@@ -73,7 +69,6 @@ void	*find_buddy(void *bl)
 	return (bud);
 }
 
-// do I really need to store free and sym?
 void	*split_block(t_alloc *alc, int ind, int fit)
 {
 	void	*bl;
@@ -91,10 +86,12 @@ void	*split_block(t_alloc *alc, int ind, int fit)
 	ind = write_header(alc, bl, 1, bl_size / 2);
 	bud = find_buddy(bl);
 	write_header(alc, bud, 1, bl_size / 2);
+	print_zone(alc, "Malloc", 0);
 	bl = split_block(alc, ind, fit);
 	return (bl);
 }
 
+//TODO  munmap
 //TODO	size_t
 void	*ft_malloc(t_alloc *g_alc, int size)
 {
@@ -110,5 +107,6 @@ void	*ft_malloc(t_alloc *g_alc, int size)
 	fit = find_fit(alc, size);
 	ind = find_block_index(alc, fit);
 	bl = split_block(alc, ind, fit);
-	return (&(bl[(int)sizeof(t_head)]));
+	print_zone(g_alc, "Malloc", 0);
+	return (bl + HEAD_SIZE);
 }

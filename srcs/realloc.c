@@ -6,9 +6,11 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/13 14:48:26 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/13 16:16:04 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/13 16:42:48 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#include "malloc.h"
 
 void	grow_block(t_alloc *alc, void *bl, int size)
 {
@@ -24,6 +26,7 @@ void	grow_block(t_alloc *alc, void *bl, int size)
 		erase_buddies(alc, bl, bud);
 		bh->sym = 0;
 		write_header(alc, bl, 0, h->size * 2);
+		print_zone(alc, "grow", 0);
 	}
 }
 
@@ -33,8 +36,8 @@ char	is_enough_space(t_alloc *alc, void *bl, int size)
 	t_head	*bh;
 	int		mock_size;
 
-	mock_size = bl->size;
-	while (mock_size <= alc->max / 2)
+	mock_size = ((t_head *)bl)->size;
+	while (mock_size <= power_of_two(alc->max) / 2)
 	{
 		bud = xor_size(bl, mock_size);
 		if (bud < bl)
@@ -46,13 +49,13 @@ char	is_enough_space(t_alloc *alc, void *bl, int size)
 			break;
 		mock_size *= 2;
 	}
-	if (mock_size > alc->max / 2)
+	if (mock_size > power_of_two(alc->max) / 2)
 		return (0);
 	return (1);
 }
 
 //TODO size_t
-void	*realloc(t_alloc *alc, void *src, int size)
+void	*ft_realloc(t_alloc *alc, void *src, int size)
 {
 	void	*bl;
 	t_head	*h;
@@ -62,7 +65,10 @@ void	*realloc(t_alloc *alc, void *src, int size)
 	bl = src - HEAD_SIZE;
 	h = (t_head *)bl;
 	if (h->sym != SYM || h->free != 0)
-		printf("Error for object %p: pointer being reallocated was not allocated\n", scr);
+	{
+		printf("Error for object %p: pointer being reallocated was not allocated\n", src);
+		return(NULL);
+	}
 	else
 	{
 		if (size <= h->size - HEAD_SIZE)

@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/13 09:41:40 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/13 11:27:41 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/13 16:21:08 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,45 +62,27 @@ int		merge_bud(t_alloc *alc, void *bl)
 			bl = bud;
 		bh->sym = 0;
 		write_header(alc, bl, 1, 2 * h->size);
+		print_zone(alc, "free", 0);
 		merge_bud(alc, bl);
 	}
 	return(0);
 }
 
+
+//TODO check if free is in a good zone
 void	ft_free(t_alloc *alc, void *ptr)
 {
 	void	*bl;
 	t_head	*h;
 
-	bl = xor_size(ptr, HEAD_SIZE);
+	bl = ptr - HEAD_SIZE;
 	h = (t_head *)bl;
-	if (h->sym != SYM)
-		printf("This is sick...\n");
-	if (h->free != 0)
-		printf("wtf you have already freed this block!\n");
-	h->free = 1;
-	merge_bud(alc, bl);
-}
-
-
-
-int		main()
-{
-	t_alloc		*alc;
-	void		*ptr;
-	void		*ptr2;
-	void		*ptr3;
-
-	alc = ini_alloc();
-	ptr = ft_malloc(alc, 500);
-	ptr2 = ft_malloc(alc, 6);
-	ptr3 = ft_malloc(alc, 30);
-	dump_table(alc);
-	ft_free(alc, ptr);
-	dump_table(alc);
-	ft_free(alc, ptr2);
-	dump_table(alc);
-	ft_free(alc, ptr3);
-	dump_table(alc);
-	return(0);
+	if (h->sym != SYM || h->free != 0)
+		printf("Error for object %p: pointer being freed was not allocated\n", ptr);
+	else
+	{
+		h->free = 1;
+		merge_bud(alc, bl);
+		print_zone(alc, "free", 0);
+	}
 }
