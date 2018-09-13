@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 09:07:48 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/12 17:59:18 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/13 10:52:28 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 # define TINY_MAX 12
 # define SMALL_MIN 10
 # define SMALL_MAX 20
-# define HEAD_SIZE 8
+# define HEAD_SIZE ((int)sizeof(t_head))
 # define SYM '*'
 
 # include "libft.h"
@@ -49,6 +49,9 @@ void	print_mem(char *ptr, int size);
 void	dump_table(t_alloc *alc);
 int		write_header(t_alloc *alc, void *bl, char fr, int bl_size);
 t_alloc     *ini_alloc(void);
-int     find_seq_start(t_alloc *alc, int bl_size);
+int     find_seq_start(t_alloc *alc, int ind);
+void	*xor_size(void *ptr, int size);
+void	*ft_malloc(t_alloc *g_alc, int size);
+void	*find_buddy(void *bl);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 09:07:14 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/12 18:56:04 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/13 11:04:37 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,14 +58,19 @@ int		find_block_index(t_alloc *alc, int fit)
 	return(s + i);
 }
 
+void	*xor_size(void *ptr, int size)
+{
+	return((void *)((uintptr_t)ptr ^ size));
+}
+
 void	*find_buddy(void *bl)
 {
-	uintptr_t 	bud;
+	void	 	*bud;
 	t_head		*h;
 
 	h = (t_head *)bl;
-	bud = (uintptr_t)h ^ h->size;
-	return ((void *)bud);
+	bud = xor_size(bl, h->size);
+	return (bud);
 }
 
 // do I really need to store free and sym?
@@ -106,16 +111,5 @@ void	*ft_malloc(t_alloc *g_alc, int size)
 	ind = find_block_index(alc, fit);
 	bl = split_block(alc, ind, fit);
 	dump_table(alc);
-	return (bl);
-}
-
-int		main()
-{
-	t_alloc		*alc;
-	alc = ini_alloc();
-	ft_malloc(alc, 500);
-	ft_malloc(alc, 32);
-	ft_malloc(alc, 8);
-	ft_malloc(alc, 260);
-	return(0);
+	return (&(bl[(int)sizeof(t_head)]));
 }
