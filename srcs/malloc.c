@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 09:07:14 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/13 11:04:37 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/13 11:06:12 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,6 +110,5 @@ void	*ft_malloc(t_alloc *g_alc, int size)
 	fit = find_fit(alc, size);
 	ind = find_block_index(alc, fit);
 	bl = split_block(alc, ind, fit);
-	dump_table(alc);
 	return (&(bl[(int)sizeof(t_head)]));
 }

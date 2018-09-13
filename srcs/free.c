@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/13 09:41:40 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/13 11:05:21 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/13 11:27:41 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,8 @@ int		merge_bud(t_alloc *alc, void *bl)
 	if (bh && bh->sym == SYM && size == bh->size && bh->free == 1)
 	{
 		erase_buddies(alc, bl, bud);
+		if (bud < bl)
+			bl = bud;
 		bh->sym = 0;
 		write_header(alc, bl, 1, 2 * h->size);
 		merge_bud(alc, bl);
@@ -80,13 +82,25 @@ void	ft_free(t_alloc *alc, void *ptr)
 	merge_bud(alc, bl);
 }
 
+
+
 int		main()
 {
 	t_alloc		*alc;
 	void		*ptr;
+	void		*ptr2;
+	void		*ptr3;
 
 	alc = ini_alloc();
 	ptr = ft_malloc(alc, 500);
+	ptr2 = ft_malloc(alc, 6);
+	ptr3 = ft_malloc(alc, 30);
+	dump_table(alc);
+	ft_free(alc, ptr);
+	dump_table(alc);
+	ft_free(alc, ptr2);
+	dump_table(alc);
+	ft_free(alc, ptr3);
 	dump_table(alc);
 	return(0);
 }
