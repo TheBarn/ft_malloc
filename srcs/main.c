@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/13 16:19:05 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/14 13:26:34 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/14 15:19:48 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,14 @@
 int		main()
 {
 	t_dib		*dib;
-	void		*ptr;
+	int			i;
 
 	dib = ini_dib();
-	ptr = ft_malloc(dib, 500);
+	i = 0;
+	while (i < 10)
+	{
+		ft_malloc(dib, 500);
+		i++;
+	}
 	return(0);
 }

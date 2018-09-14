@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 09:07:48 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/14 15:09:13 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/14 15:55:17 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ int     find_seq_start(t_alloc *alc, int ind);
 void	*xor_size(void *ptr, int size);
 void	*ft_malloc(t_dib *dib, int size);
 void	*find_buddy(void *bl);
-void	print_zone(t_alloc *alc, char *msg);
+void	print_zone(t_alloc *alc, char *op);
 void	*ft_realloc(t_dib *dib, void *src, int size);
 void	erase_buddies(t_alloc *alc, void *bl, void *bud);
 void	ft_free(t_dib *dib, void *ptr);
@@ -79,5 +79,6 @@ t_alloc	*make_alloc(int min, int max);
 t_dib	*double_dib_size(t_dib *dib);
 t_dib	*ini_dib(void);
 t_alloc	*find_zone(t_dib *dib, void *ptr);
+void	print_header(t_dib *dib, t_alloc *alc);
 
 #endif

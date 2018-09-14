@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 09:07:14 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/14 15:09:58 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/14 15:17:41 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ void	*split_block(t_alloc *alc, int ind, int fit)
 	ind = write_header(alc, bl, 1, bl_size / 2);
 	bud = find_buddy(bl);
 	write_header(alc, bud, 1, bl_size / 2);
-	print_zone(alc, "Malloc");
+	print_zone(alc, "malloc");
 	bl = split_block(alc, ind, fit);
 	return (bl);
 }
@@ -121,6 +121,6 @@ void	*ft_malloc(t_dib *dib, int size)
 		ind = find_block_index(alc, fit);
 	}
 	bl = split_block(alc, ind, fit);
-	print_zone(alc, "Malloc");
+	print_zone(alc, "malloc");
 	return (bl + HEAD_SIZE);
 }

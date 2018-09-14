@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/14 09:40:07 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/14 14:57:29 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/14 15:45:46 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ t_alloc		*make_new_zone(t_dib *dib, char tiny)
 	max = tiny ? TINY_MAX : SMALL_MAX;
 	alc = make_alloc(min, max);
 	add_to_dib(dib, alc, tiny);
+	print_header(dib, alc);
 	return (alc);
 }
 
@@ -61,7 +62,6 @@ t_alloc		*get_zone(t_dib *dib, int size, char tiny)
 		while (i < nb)
 		{
 			alc = ar[i];
-//TODO update left with size of bigget block left
 			if (alc->left >= size)
 				return (alc);
 			i++;

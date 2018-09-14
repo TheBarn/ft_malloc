@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/13 11:29:11 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/14 15:08:45 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/14 16:05:36 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,15 +115,14 @@ void	print_total(t_alloc *alc)
 	printf("\n");
 }
 
-void	print_zone(t_alloc *alc, char *msg)
+void	print_zone(t_alloc *alc, char *op)
 {
 	int		ind;
 	int		up;
 
-	up = alc->max - alc->min + 3 + 5;
+	up = alc->max - alc->min + 3 + 7;
 	printf("\033[%dA", up);
-	usleep(SPEED);
-	printf("\033[2A\t\t\t%s              \n\n", msg);
+	printf("\tCurrent operation: %s              \n\n", op);
 	ind = alc->max;
 	while (ind >= alc->min)
 	{
@@ -132,4 +131,47 @@ void	print_zone(t_alloc *alc, char *msg)
 	}
 	print_total(alc);
 	printf("\n\n\n\n\n");
+	usleep(SPEED);
+}
+
+int		find_zone_ind(t_dib *dib, t_alloc *alc)
+{
+	int		i;
+
+	i = 0;
+	if (alc->max == TINY_MAX)
+	{
+		while (i < dib->tiny_nb && (dib->tiny_alc)[i] != alc)
+			i++;
+	}
+	else
+	{
+		while (i < dib->small_nb && (dib->small_alc)[i] != alc)
+			i++;
+	}
+	return (i);
+}
+
+void	print_header(t_dib *dib, t_alloc *alc)
+{
+	int		i;
+	int		size;
+
+	printf("\033[H");
+	printf("\n\tNUMBER OF ZONES:\n\tTiny Zones : %d\t\tSmall Zones : %d\t\tBig Zones : %d\n\n", dib->tiny_nb, dib->small_nb, dib->big_nb);
+	if (alc)
+	{
+		printf("\tSelected Zone:\t");
+		if (alc->max == TINY_MAX)
+			printf("tiny #");
+		else
+			printf("small #");
+		printf("%d\n\n", find_zone_ind(dib, alc) + 1);
+		i = 0;
+		size = alc->max - alc->min + 3 + 7;
+		while (i++ < size)
+			printf("\n");
+	}
+	else
+		usleep(SPEED);
 }

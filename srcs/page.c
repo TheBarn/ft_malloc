@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/14 11:46:16 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/14 15:08:55 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/14 15:46:00 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ t_dib		*ini_dib(void)
 	dib->small_nb = 0;
 	dib->big_nb = 0;
 	dib->size = 1;
-	printf("\033[2J\033[H\n\n\n\n\n");
+	printf("\033[2J");
+	print_header(dib, NULL);
 	return (dib);
 }
