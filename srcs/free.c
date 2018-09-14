@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/13 09:41:40 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/13 16:21:08 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/14 15:10:27 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,27 +62,61 @@ int		merge_bud(t_alloc *alc, void *bl)
 			bl = bud;
 		bh->sym = 0;
 		write_header(alc, bl, 1, 2 * h->size);
-		print_zone(alc, "free", 0);
+		if (alc->left < 2 * h->size)
+			alc->left = 2 * h->size;
+		print_zone(alc, "free");
 		merge_bud(alc, bl);
 	}
 	return(0);
 }
 
+t_alloc	*find_zone(t_dib *dib, void *ptr)
+{
+	t_alloc *alc;
+	int		i;
+
+	i = 0;
+	while (i < dib->tiny_nb)
+	{
+		alc = (dib->tiny_alc)[i];
+		if (ptr >= alc->zn && ptr < alc->zn + power_of_two(alc->max))
+			return (alc);
+		i++;
+	}
+	i = 0;
+	while (i < dib->small_nb)
+	{
+		alc = (dib->tiny_alc)[i];
+		if (ptr >= alc->zn && ptr < alc->zn + power_of_two(alc->max))
+			return (alc);
+		i++;
+	}
+	i = 0;
+	while (i < dib->big_nb)
+	{
+		if (ptr == (dib->big_alc)[i])
+			return ((t_alloc *)ptr);
+		i++;
+	}
+	return (NULL);
+}
 
 //TODO check if free is in a good zone
-void	ft_free(t_alloc *alc, void *ptr)
+void	ft_free(t_dib *dib, void *ptr)
 {
 	void	*bl;
 	t_head	*h;
+	t_alloc	*alc;
 
+	alc = find_zone(dib, ptr);
 	bl = ptr - HEAD_SIZE;
 	h = (t_head *)bl;
-	if (h->sym != SYM || h->free != 0)
+	if (alc != ptr && (!alc || h->sym != SYM || h->free != 0))
 		printf("Error for object %p: pointer being freed was not allocated\n", ptr);
-	else
+	else if (alc != ptr)
 	{
 		h->free = 1;
 		merge_bud(alc, bl);
-		print_zone(alc, "free", 0);
+		print_zone(alc, "free");
 	}
 }

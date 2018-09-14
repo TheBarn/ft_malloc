@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 09:07:48 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/13 16:43:11 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/14 15:09:13 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,10 @@
 
 # define TINY_MIN 4
 # define TINY_MAX 11
+# define TINY_LIM 500
 # define SMALL_MIN 10
 # define SMALL_MAX 20
+# define SMALL_LIM 250000
 # define HEAD_SIZE ((int)sizeof(t_head))
 # define SYM '*'
 # define RED 41
@@ -36,6 +38,7 @@ typedef struct		s_alloc
 	void		**table;
 	int			min;
 	int			max;
+	int			left;
 }					t_alloc;
 
 typedef struct		s_head
@@ -44,6 +47,17 @@ typedef struct		s_head
 	char			free;
 	int				size;
 }					t_head;
+
+typedef struct		s_dib
+{
+	t_alloc			**tiny_alc;
+	int				tiny_nb;
+	t_alloc			**small_alc;
+	int				small_nb;
+	void			**big_alc;
+	int				big_nb;
+	int				size;
+}					t_dib;
 
 int		power_of_two(int pow);
 int		power_of_two_ind(int num);
@@ -54,11 +68,16 @@ int		write_header(t_alloc *alc, void *bl, char fr, int bl_size);
 t_alloc     *ini_alloc(void);
 int     find_seq_start(t_alloc *alc, int ind);
 void	*xor_size(void *ptr, int size);
-void	*ft_malloc(t_alloc *g_alc, int size);
+void	*ft_malloc(t_dib *dib, int size);
 void	*find_buddy(void *bl);
-void	print_zone(t_alloc *alc, char *msg, char first);
-void	*ft_realloc(t_alloc *alc, void *src, int size);
+void	print_zone(t_alloc *alc, char *msg);
+void	*ft_realloc(t_dib *dib, void *src, int size);
 void	erase_buddies(t_alloc *alc, void *bl, void *bud);
-void	ft_free(t_alloc *alc, void *ptr);
+void	ft_free(t_dib *dib, void *ptr);
+t_alloc		*get_alloc_zone(t_dib* dib, int size);
+t_alloc	*make_alloc(int min, int max);
+t_dib	*double_dib_size(t_dib *dib);
+t_dib	*ini_dib(void);
+t_alloc	*find_zone(t_dib *dib, void *ptr);
 
 #endif

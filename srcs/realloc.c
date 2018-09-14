@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/13 14:48:26 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/13 16:42:48 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/14 15:10:41 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	grow_block(t_alloc *alc, void *bl, int size)
 		erase_buddies(alc, bl, bud);
 		bh->sym = 0;
 		write_header(alc, bl, 0, h->size * 2);
-		print_zone(alc, "grow", 0);
+		print_zone(alc, "grow");
 	}
 }
 
@@ -55,16 +55,17 @@ char	is_enough_space(t_alloc *alc, void *bl, int size)
 }
 
 //TODO size_t
-void	*ft_realloc(t_alloc *alc, void *src, int size)
+void	*ft_realloc(t_dib *dib, void *src, int size)
 {
 	void	*bl;
 	t_head	*h;
 	void	*ptr;
+	t_alloc	*alc;
 
-//TODO check if ptr is in good zone
+	alc = find_zone(dib, src);
 	bl = src - HEAD_SIZE;
 	h = (t_head *)bl;
-	if (h->sym != SYM || h->free != 0)
+	if (!alc || h->sym != SYM || h->free != 0)
 	{
 		printf("Error for object %p: pointer being reallocated was not allocated\n", src);
 		return(NULL);
@@ -73,11 +74,11 @@ void	*ft_realloc(t_alloc *alc, void *src, int size)
 	{
 		if (size <= h->size - HEAD_SIZE)
 			return(src);
-		if (!is_enough_space(alc, bl, size))
+		if (alc == src || !is_enough_space(alc, bl, size))
 		{
-			ptr = ft_malloc(alc, size);
+			ptr = ft_malloc(dib, size);
 			ft_memcpy(ptr, src, h->size - HEAD_SIZE);
-			ft_free(alc, src);
+			ft_free(dib, src);
 			return(ptr);
 		}
 		grow_block(alc, bl, size);

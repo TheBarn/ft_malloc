@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 09:07:14 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/13 16:05:19 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/14 15:09:58 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,9 +48,11 @@ int		find_block_index(t_alloc *alc, int fit)
 		}
 		i++;
 	}
-	//TODO allocate new zone if not enough space in zone ??
 	if (bl == NULL)
-		printf("Error: need to allocate a new zone\n");
+	{
+		alc->left = power_of_two(fit - 1);
+		return (-1);
+	}
 	return(s + i);
 }
 
@@ -86,27 +88,39 @@ void	*split_block(t_alloc *alc, int ind, int fit)
 	ind = write_header(alc, bl, 1, bl_size / 2);
 	bud = find_buddy(bl);
 	write_header(alc, bud, 1, bl_size / 2);
-	print_zone(alc, "Malloc", 0);
+	print_zone(alc, "Malloc");
 	bl = split_block(alc, ind, fit);
 	return (bl);
 }
 
 //TODO  munmap
 //TODO	size_t
-void	*ft_malloc(t_alloc *g_alc, int size)
+void	*ft_malloc(t_dib *dib, int size)
 {
 	t_alloc *alc;
 	int		fit;
 	int		ind;
 	void	*bl;
 
-	if (size < power_of_two(10))
-		alc = &(g_alc[0]);
-	else
-		alc = &(g_alc[1]);
-	fit = find_fit(alc, size);
-	ind = find_block_index(alc, fit);
+	if (size > SMALL_LIM)
+	{
+		bl = mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
+		if (!bl)
+			printf("Error: mmap allocation of size %d: no space found\n", size);
+		if (dib->big_nb >= (getpagesize() - ((int)sizeof(t_dib)) / 3) / (int)sizeof(t_alloc *))
+			dib = double_dib_size(dib);
+		(dib->big_alc)[dib->big_nb] = bl;
+		dib->big_nb += 1;
+		return (bl);
+	}
+	ind = -1;
+	while (ind < 0)
+	{
+		alc = get_alloc_zone(dib, size);
+		fit = find_fit(alc, size);
+		ind = find_block_index(alc, fit);
+	}
 	bl = split_block(alc, ind, fit);
-	print_zone(g_alc, "Malloc", 0);
+	print_zone(alc, "Malloc");
 	return (bl + HEAD_SIZE);
 }

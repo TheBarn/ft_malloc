@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/13 16:19:05 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/13 16:27:35 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/14 13:26:34 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,10 @@
 
 int		main()
 {
-	t_alloc		*alc;
-	void		*ptr1;
+	t_dib		*dib;
+	void		*ptr;
 
-	alc = ini_alloc();
-	ptr1 = ft_malloc(alc, 500);
-	ft_realloc(alc, ptr1, 700);
+	dib = ini_dib();
+	ptr = ft_malloc(dib, 500);
 	return(0);
 }

@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/13 11:29:11 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/13 14:37:31 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/14 15:08:45 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,19 +115,14 @@ void	print_total(t_alloc *alc)
 	printf("\n");
 }
 
-void	print_zone(t_alloc *alc, char *msg, char first)
+void	print_zone(t_alloc *alc, char *msg)
 {
 	int		ind;
 	int		up;
 
-	if (first)
-		printf("\033[2J\033[H\n\n\n\n\n");
-	else
-	{
-		up = alc->max - alc->min + 3 + 5;
-		printf("\033[%dA", up);
-		usleep(SPEED);
-	}
+	up = alc->max - alc->min + 3 + 5;
+	printf("\033[%dA", up);
+	usleep(SPEED);
 	printf("\033[2A\t\t\t%s              \n\n", msg);
 	ind = alc->max;
 	while (ind >= alc->min)
