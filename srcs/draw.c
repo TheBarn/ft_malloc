@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/13 11:29:11 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/14 16:05:36 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/14 16:40:53 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,14 +115,21 @@ void	print_total(t_alloc *alc)
 	printf("\n");
 }
 
-void	print_zone(t_alloc *alc, char *op)
+void	print_zone(t_alloc *alc, char *op, void *arg)
 {
 	int		ind;
 	int		up;
 
 	up = alc->max - alc->min + 3 + 7;
 	printf("\033[%dA", up);
-	printf("\tCurrent operation: %s              \n\n", op);
+	printf("\tCurrent operation: %s ", op);
+	if (ft_strcmp("malloc", op) == 0 && arg)
+		printf("of size %d             ", *((int *)arg));
+	else if (ft_strcmp("free", op) == 0 && arg)
+		printf("pointer %p             ", arg);
+	else if (ft_strcmp("realloc", op) == 0 && arg)
+		printf("of size %d             ", *((int *)arg));
+	printf("\n\n");
 	ind = alc->max;
 	while (ind >= alc->min)
 	{

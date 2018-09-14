@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/13 09:41:40 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/14 15:18:41 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/14 16:48:21 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ int		merge_bud(t_alloc *alc, void *bl)
 		write_header(alc, bl, 1, 2 * h->size);
 		if (alc->left < 2 * h->size)
 			alc->left = 2 * h->size;
-		print_zone(alc, "free");
+		print_zone(alc, "free", NULL);
 		merge_bud(alc, bl);
 	}
 	return(0);
@@ -109,6 +109,8 @@ void	ft_free(t_dib *dib, void *ptr)
 	t_alloc	*alc;
 
 	alc = find_zone(dib, ptr);
+	print_header(dib, alc);
+	usleep(HEAD_SIZE);
 	bl = ptr - HEAD_SIZE;
 	h = (t_head *)bl;
 	if (alc != ptr && (!alc || h->sym != SYM || h->free != 0))
@@ -117,6 +119,6 @@ void	ft_free(t_dib *dib, void *ptr)
 	{
 		h->free = 1;
 		merge_bud(alc, bl);
-		print_zone(alc, "free");
+		print_zone(alc, "free", ptr);
 	}
 }

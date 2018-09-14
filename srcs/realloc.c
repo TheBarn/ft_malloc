@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/13 14:48:26 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/14 15:17:25 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/14 16:32:35 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	grow_block(t_alloc *alc, void *bl, int size)
 		erase_buddies(alc, bl, bud);
 		bh->sym = 0;
 		write_header(alc, bl, 0, h->size * 2);
-		print_zone(alc, "realloc");
+		print_zone(alc, "realloc", &size);
 	}
 }
 

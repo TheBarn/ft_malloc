@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 09:07:48 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/14 15:55:17 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/14 16:26:43 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 # define SYM '*'
 # define RED 41
 # define GREEN 42
-# define SPEED 1000000
+# define SPEED 800000
 
 # include "libft.h"
 # include <stdio.h>
@@ -70,7 +70,7 @@ int     find_seq_start(t_alloc *alc, int ind);
 void	*xor_size(void *ptr, int size);
 void	*ft_malloc(t_dib *dib, int size);
 void	*find_buddy(void *bl);
-void	print_zone(t_alloc *alc, char *op);
+void	print_zone(t_alloc *alc, char *op, void *arg);
 void	*ft_realloc(t_dib *dib, void *src, int size);
 void	erase_buddies(t_alloc *alc, void *bl, void *bud);
 void	ft_free(t_dib *dib, void *ptr);
