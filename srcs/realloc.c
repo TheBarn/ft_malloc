@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/13 14:48:26 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/17 13:13:19 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/17 14:41:31 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,14 @@
 
 extern t_dib	*g_dib;
 
-void	grow_block(t_alloc *alc, void *bl, int size)
+void	grow_block(t_alloc *alc, void *bl, size_t size)
 {
 	t_head		*h;
 	void		*bud;
 	t_head		*bh;
 
 	h = (t_head*)bl;
-	while (h->size - HEAD_SIZE < size)
+	while ((size_t)(h->size - HEAD_SIZE) < size)
 	{
 		bud = find_buddy(bl);
 		bh = (t_head *)bud;
@@ -32,11 +32,11 @@ void	grow_block(t_alloc *alc, void *bl, int size)
 	}
 }
 
-char	is_enough_space(t_alloc *alc, void *bl, int size)
+char	is_enough_space(t_alloc *alc, void *bl, size_t size)
 {
 	void	*bud;
 	t_head	*bh;
-	int		mock_size;
+	size_t	mock_size;
 
 	mock_size = ((t_head *)bl)->size;
 	while (mock_size <= power_of_two(alc->max) / 2)
@@ -45,7 +45,7 @@ char	is_enough_space(t_alloc *alc, void *bl, int size)
 		if (bud < bl)
 			return (0);
 		bh = (t_head *)bud;
-		if (bh->free != 1 || bh->size != mock_size)
+		if (bh->free != 1 || (size_t)bh->size != mock_size)
 			return (0);
 		if (mock_size * 2 - HEAD_SIZE >= size)
 			break ;
@@ -56,27 +56,26 @@ char	is_enough_space(t_alloc *alc, void *bl, int size)
 	return (1);
 }
 
-void	*realloc_block(void *src, int size, t_alloc *alc, void *bl)
+void	*realloc_block(void *src, size_t size, t_alloc *alc, void *bl)
 {
 	t_head	*h;
 	void	*ptr;
 
 	h = (t_head *)bl;
-	if (size <= h->size - HEAD_SIZE)
+	if (size <= (size_t)(h->size - HEAD_SIZE))
 		return (src);
 	if (alc == src || !is_enough_space(alc, bl, size))
 	{
-		ptr = ft_malloc(size);
+		ptr = malloc(size);
 		ft_memcpy(ptr, src, h->size - HEAD_SIZE);
-		ft_free(src);
+		free(src);
 		return (ptr);
 	}
 	grow_block(alc, bl, size);
 	return (src);
 }
 
-//TODO size_t
-void	*ft_realloc(void *src, int size)
+void	*realloc(void *src, size_t size)
 {
 	void	*bl;
 	t_head	*h;
@@ -88,8 +87,7 @@ void	*ft_realloc(void *src, int size)
 	h = (t_head *)bl;
 	if (!alc || h->sym != SYM || h->free != 0)
 	{
-		printf("Error for object %p: pointer being reallocated \
-											was not allocated\n", src);
+		throw_error("Error: pointer being reallocated was not allocated\n");
 		return (NULL);
 	}
 	else

@@ -6,16 +6,34 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 16:34:10 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/17 13:22:48 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/17 14:17:04 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
 
-int		power_of_two(int pow)
+int		count_digit(int n)
+{
+	int				count;
+	unsigned int	nb;
+
+	count = 1;
+	if (n < 0)
+		nb = (unsigned int)-n;
+	else
+		nb = (unsigned int)n;
+	while (nb > 9)
+	{
+		nb = (nb - (nb % 10)) / 10;
+		count++;
+	}
+	return (count);
+}
+
+size_t	power_of_two(int pow)
 {
 	int		i;
-	int		num;
+	size_t	num;
 
 	i = 0;
 	num = 1;

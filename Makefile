@@ -6,7 +6,7 @@
 #    By: barnout <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/09/11 09:10:24 by barnout           #+#    #+#              #
-#    Updated: 2018/09/17 13:28:36 by barnout          ###   ########.fr        #
+#    Updated: 2018/09/17 16:32:08 by barnout          ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 
@@ -14,14 +14,18 @@ C_GREEN = "\033[32m"
 C_YELLOW = "\033[33m"
 C_RESET = "\033[0m"
 
-NAME = malloc
+ifeq ($(HOSTTYPE),)
+	HOSTTYPE := $(shell uname -m)_$(shell uname -s)
+endif
+NAME = libft_malloc_$(HOSTTYPE).so
 CC = gcc
 LIBFT = ./libft
-LIBFT_A = ./libft/libftprintf.a
+LIBFT_A = ./libft/libft.a
+LINK_NAME = libft_malloc.so
 INC_DIR = ./includes
 C_FLAGS = -Wall -Wextra -Werror
 I_FLAGS = -I$(INC_DIR) -I$(LIBFT)
-SRC = main.c malloc.c power.c ini.c free.c draw.c realloc.c distribute.c page.c
+SRC = malloc.c power.c ini.c free.c draw.c realloc.c distribute.c page.c utils.c
 O_DIR = ./objs
 S_DIR = ./srcs
 INCLUDES = malloc.h
@@ -33,7 +37,8 @@ all: $(NAME)
 $(NAME): $(OBJ) $(DEP)
 	@make -C $(LIBFT)
 	@echo Compiling $(NAME) ...
-	@$(CC) $(C_FLAGS) $(OBJ) $(LIBFT_A) -o $@ $(I_FLAGS)
+	$(CC) -shared $(C_FLAGS) $(OBJ) $(LIBFT_A) -o $@ $(I_FLAGS)
+	$(shell ln -s $(NAME) $(LINK_NAME))
 	@echo $(C_GREEN)$(NAME) Compilation Completed$(C_RESET)
 
 clean:
@@ -42,9 +47,9 @@ clean:
 	@echo $(C_YELLOW)$(NAME) Object Files Deleted$(C_RESET)
 
 fclean: clean
-	@rm -f $(NAME)
+	@rm -f $(NAME) $(LINK_NAME)
 	@make clearexe -C $(LIBFT)
-	@echo $(C_YELLOW)$(NAME) Executable Deleted$(C_RESET)
+	@echo $(C_YELLOW)$(NAME) Library Deleted$(C_RESET)
 
 re: fclean all
 

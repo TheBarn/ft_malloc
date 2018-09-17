@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/13 11:29:11 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/17 12:13:33 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/17 14:40:54 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,11 +56,11 @@ void	print_ind(t_alloc *alc, int ind)
 	int		j;
 	int		r;
 
-	sp = ft_strlen(ft_itoa(power_of_two(alc->max))) + 2;
+	sp = count_digit(power_of_two(alc->max)) + 2;
 	nb = power_of_two(ind);
 	printf("%d", nb);
 	j = 0;
-	r = sp - ft_strlen(ft_itoa(nb));
+	r = sp - count_digit(nb);
 	while (j++ < r)
 		printf(" ");
 }
@@ -98,7 +98,7 @@ void	print_total(t_alloc *alc)
 	void	*bl;
 	int		sp;
 
-	sp = ft_strlen(ft_itoa(power_of_two(alc->max))) + 2;
+	sp = count_digit(power_of_two(alc->max)) + 2;
 	i = 0;
 	printf("\ntot");
 	while (i++ < sp - 3)
@@ -122,25 +122,28 @@ void	print_zone(t_alloc *alc, char *op, void *arg)
 	int		ind;
 	int		up;
 
-	up = alc->max - alc->min + 3 + 7;
-	printf("\033[%dA", up);
-	printf("\tCurrent operation: %s ", op);
-	if (ft_strcmp("malloc", op) == 0 && arg)
-		printf("of size %d             ", *((int *)arg));
-	else if (ft_strcmp("free", op) == 0 && arg)
-		printf("pointer %p             ", arg);
-	else if (ft_strcmp("realloc", op) == 0 && arg)
-		printf("of size %d             ", *((int *)arg));
-	printf("\n\n");
-	ind = alc->max;
-	while (ind >= alc->min)
+	if (VISU)
 	{
-		print_line(alc, ind);
-		ind--;
+		up = alc->max - alc->min + 3 + 7;
+		printf("\033[%dA", up);
+		printf("\tCurrent operation: %s ", op);
+		if (ft_strcmp("malloc", op) == 0 && arg)
+			printf("of size %d             ", *((int *)arg));
+		else if (ft_strcmp("free", op) == 0 && arg)
+			printf("pointer %p             ", arg);
+		else if (ft_strcmp("realloc", op) == 0 && arg)
+			printf("of size %d             ", *((int *)arg));
+		printf("\n\n");
+		ind = alc->max;
+		while (ind >= alc->min)
+		{
+			print_line(alc, ind);
+			ind--;
+		}
+		print_total(alc);
+		printf("\n\n\n\n\n");
+		usleep(SPEED);
 	}
-	print_total(alc);
-	printf("\n\n\n\n\n");
-	usleep(SPEED);
 }
 
 int		find_zone_ind(t_alloc *alc)
@@ -166,23 +169,28 @@ void	print_header(t_alloc *alc)
 	int		i;
 	int		size;
 
-	printf("\033[H");
-	printf("\n\tNUMBER OF ZONES:\n\tTiny Zones : %d\t\tSmall Zones \
-				: %d\t\tBig Zones : %d\n\n", \
-				g_dib->tiny_nb, g_dib->small_nb, g_dib->big_nb);
-	if (alc)
+	if (VISU)
 	{
-		printf("\tSelected Zone:\t");
-		if (alc->max == TINY_MAX)
-			printf("tiny #");
+		if (!alc)
+			printf("\033[2J");
+		printf("\033[H");
+		printf("\n\tNUMBER OF ZONES:\n\tTiny Zones : %d\t\tSmall Zones \
+				: %d\t\tBig Zones : %d\n\n", \
+			   g_dib->tiny_nb, g_dib->small_nb, g_dib->big_nb);
+		if (alc)
+		{
+			printf("\tSelected Zone:\t");
+			if (alc->max == TINY_MAX)
+				printf("tiny #");
+			else
+				printf("small #");
+			printf("%d\n\n", find_zone_ind(alc) + 1);
+			i = 0;
+			size = alc->max - alc->min + 3 + 7;
+			while (i++ < size)
+				printf("\n");
+		}
 		else
-			printf("small #");
-		printf("%d\n\n", find_zone_ind(alc) + 1);
-		i = 0;
-		size = alc->max - alc->min + 3 + 7;
-		while (i++ < size)
-			printf("\n");
+			usleep(SPEED);
 	}
-	else
-		usleep(SPEED);
 }

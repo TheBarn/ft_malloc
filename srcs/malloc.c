@@ -6,15 +6,15 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 09:07:14 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/17 11:50:11 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/17 15:54:44 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
 
-extern t_dib *g_dib;
+t_dib *g_dib = NULL;
 
-int		find_fit(t_alloc *alc, int size)
+int		find_fit(t_alloc *alc, size_t size)
 {
 	int		fit;
 
@@ -105,14 +105,14 @@ void	*split_block(t_alloc *alc, int ind, int fit)
 	return (bl);
 }
 
-void	*ft_big_malloc(int size)
+void	*ft_big_malloc(size_t size)
 {
 	void	*bl;
 
 	bl = mmap(NULL, size, PROT_READ | PROT_WRITE, \
 				MAP_ANON | MAP_PRIVATE, -1, 0);
 	if (!bl)
-		printf("Error: mmap allocation of size %d: no space found\n", size);
+		throw_error("Error: mmap: no space found\n");
 	if (g_dib->big_nb >= \
 		(getpagesize() - ((int)sizeof(t_dib)) / 3) / (int)sizeof(t_alloc *))
 		double_dib_size();
@@ -122,8 +122,7 @@ void	*ft_big_malloc(int size)
 }
 
 //TODO  munmap
-//TODO	size_t
-void	*ft_malloc(int size)
+void	*malloc(size_t size)
 {
 	t_alloc *alc;
 	int		fit;

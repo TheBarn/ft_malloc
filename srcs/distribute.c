@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/14 09:40:07 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/17 11:50:21 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/17 14:30:43 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ t_alloc		*make_new_zone(char tiny)
 	return (alc);
 }
 
-t_alloc		*get_zone(int size, char tiny)
+t_alloc		*get_zone(size_t size, char tiny)
 {
 	t_alloc		**ar;
 	t_alloc		*alc;
@@ -65,7 +65,7 @@ t_alloc		*get_zone(int size, char tiny)
 		while (i < nb)
 		{
 			alc = ar[i];
-			if (alc->left >= size)
+			if ((size_t)alc->left >= size)
 				return (alc);
 			i++;
 		}
@@ -74,7 +74,7 @@ t_alloc		*get_zone(int size, char tiny)
 	}
 }
 
-t_alloc		*get_alloc_zone(int size)
+t_alloc		*get_alloc_zone(size_t size)
 {
 	if (size <= 0 || size > SMALL_LIM)
 		return (NULL);

@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/13 09:41:40 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/17 11:41:53 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/17 14:37:20 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ int		merge_bud(t_alloc *alc, void *bl)
 
 	h = (t_head*)bl;
 	size = h->size;
-	if (size == power_of_two(alc->max))
+	if ((size_t)size == power_of_two(alc->max))
 		return (0);
 	bud = find_buddy(bl);
 	bh = (t_head*)bud;
@@ -107,7 +107,7 @@ t_alloc	*find_zone(void *ptr)
 	return (alc);
 }
 
-void	ft_free(void *ptr)
+void	free(void *ptr)
 {
 	void	*bl;
 	t_head	*h;
@@ -117,12 +117,10 @@ void	ft_free(void *ptr)
 	{
 		alc = find_zone(ptr);
 		print_header(alc);
-		usleep(HEAD_SIZE);
 		bl = ptr - HEAD_SIZE;
 		h = (t_head *)bl;
 		if (alc != ptr && (!alc || h->sym != SYM || h->free != 0))
-			printf("Error for object %p: pointer being freed was \
-											not allocated\n", ptr);
+			throw_error("Error: pointer being freed was not allocated\n");
 		else if (alc != ptr)
 		{
 			h->free = 1;

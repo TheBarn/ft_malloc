@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 09:07:48 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/17 13:26:33 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/17 15:54:29 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,26 +32,29 @@
 # include <sys/mman.h>
 # include <limits.h>
 # include <stdint.h>
+# include <unistd.h>
 # include "typedef.h"
 
-int		power_of_two(int pow);
+size_t	power_of_two(int pow);
 int		power_of_two_ind(int num);
 int		sum_power_of_two(int start, int end);
 int		write_header(t_alloc *alc, void *bl, char fr, int bl_size);
 t_alloc	*ini_alloc(void);
 int		find_seq_start(t_alloc *alc, int ind);
 void	*xor_size(void *ptr, int size);
-void	*ft_malloc(int size);
+void	*malloc(size_t size);
 void	*find_buddy(void *bl);
 void	print_zone(t_alloc *alc, char *op, void *arg);
-void	*ft_realloc(void *src, int size);
+void	*realloc(void *src, size_t size);
 void	erase_buddies(t_alloc *alc, void *bl, void *bud);
-void	ft_free(void *ptr);
-t_alloc	*get_alloc_zone(int size);
+void	free(void *ptr);
+t_alloc	*get_alloc_zone(size_t size);
 t_alloc	*make_alloc(int min, int max);
 void	double_dib_size(void);
 void	ini_dib(void);
 t_alloc	*find_zone(void *ptr);
 void	print_header(t_alloc *alc);
+int		count_digit(int n);
+void	throw_error(char *msg);
 
 #endif

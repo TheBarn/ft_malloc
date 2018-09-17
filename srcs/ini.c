@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/12 15:58:31 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/17 13:21:22 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/17 14:38:35 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,7 @@ void	*get_new_zone(int zn_size)
 	zn = mmap(NULL, zn_size, PROT_READ | PROT_WRITE, \
 								MAP_ANON | MAP_PRIVATE, -1, 0);
 	if (!zn)
-		printf("Error: mmap allocation of size %d: no space found\n", \
-																zn_size);
+		throw_error("Error: mmap allocation: no space found\n");
 	return (zn);
 }
 
@@ -74,7 +73,7 @@ void	*make_table(t_alloc *alc)
 										MAP_ANON | MAP_PRIVATE, -1, 0);
 	if (!table)
 	{
-		printf("Error: mmap allocation of size %d: no space found\n", size);
+		throw_error("Error: mmap allocation: no space found\n");
 		return (NULL);
 	}
 	memset(table, 0, size);
@@ -91,8 +90,7 @@ t_alloc	*make_alloc(int min, int max)
 											MAP_ANON | MAP_PRIVATE, -1, 0);
 	if (!alc)
 	{
-		printf("Error: mmap allocation of size %lu: no space found\n", \
-														sizeof(t_alloc));
+		throw_error("Error: mmap allocation: no space found\n");
 		return (NULL);
 	}
 	alc->min = min;
