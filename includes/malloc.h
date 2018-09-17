@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 09:07:48 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/14 16:26:43 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/17 11:50:01 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 # define RED 41
 # define GREEN 42
 # define SPEED 800000
+# define VISU 1
 
 # include "libft.h"
 # include <stdio.h>
@@ -68,17 +69,17 @@ int		write_header(t_alloc *alc, void *bl, char fr, int bl_size);
 t_alloc     *ini_alloc(void);
 int     find_seq_start(t_alloc *alc, int ind);
 void	*xor_size(void *ptr, int size);
-void	*ft_malloc(t_dib *dib, int size);
+void	*ft_malloc(int size);
 void	*find_buddy(void *bl);
 void	print_zone(t_alloc *alc, char *op, void *arg);
-void	*ft_realloc(t_dib *dib, void *src, int size);
+void	*ft_realloc(void *src, int size);
 void	erase_buddies(t_alloc *alc, void *bl, void *bud);
-void	ft_free(t_dib *dib, void *ptr);
-t_alloc		*get_alloc_zone(t_dib* dib, int size);
+void	ft_free(void *ptr);
+t_alloc		*get_alloc_zone(int size);
 t_alloc	*make_alloc(int min, int max);
-t_dib	*double_dib_size(t_dib *dib);
-t_dib	*ini_dib(void);
-t_alloc	*find_zone(t_dib *dib, void *ptr);
-void	print_header(t_dib *dib, t_alloc *alc);
+void	double_dib_size(void);
+void	ini_dib(void);
+t_alloc	*find_zone(void *ptr);
+void	print_header(t_alloc *alc);
 
 #endif

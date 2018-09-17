@@ -6,13 +6,14 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 09:07:14 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/14 16:45:48 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/17 11:50:11 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
 
-//TODO manage which zone to use according to size of malloc
+extern t_dib *g_dib;
+
 int		find_fit(t_alloc *alc, int size)
 {
 	int		fit;
@@ -23,17 +24,13 @@ int		find_fit(t_alloc *alc, int size)
 	return (fit);
 }
 
-int		find_block_index(t_alloc *alc, int fit)
+int		find_in_seq(t_alloc *alc, int s, int len)
 {
-	int		s;
-	int		len;
 	int		i;
 	t_head	*h;
 	void	*bl;
 
-	s = find_seq_start(alc, fit);
 	i = 0;
-	len = sum_power_of_two(0, alc->max - fit);
 	bl = NULL;
 	while (i < len)
 	{
@@ -43,27 +40,42 @@ int		find_block_index(t_alloc *alc, int fit)
 			if (h->free == 1)
 			{
 				bl = alc->table[s + i];
-				break;
+				break ;
 			}
 		}
 		i++;
 	}
-	if (bl == NULL)
+	if (bl)
+		return (s + i);
+	else
+		return (-1);
+}
+
+int		find_block_index(t_alloc *alc, int fit)
+{
+	int		ind;
+	int		s;
+	int		len;
+
+	s = find_seq_start(alc, fit);
+	len = sum_power_of_two(0, alc->max - fit);
+	ind = find_in_seq(alc, s, len);
+	if (ind == -1)
 	{
 		alc->left = power_of_two(fit - 1);
 		return (-1);
 	}
-	return(s + i);
+	return (ind);
 }
 
 void	*xor_size(void *ptr, int size)
 {
-	return((void *)((uintptr_t)ptr ^ size));
+	return ((void *)((uintptr_t)ptr ^ size));
 }
 
 void	*find_buddy(void *bl)
 {
-	void	 	*bud;
+	void		*bud;
 	t_head		*h;
 
 	h = (t_head *)bl;
@@ -93,9 +105,25 @@ void	*split_block(t_alloc *alc, int ind, int fit)
 	return (bl);
 }
 
+void	*ft_big_malloc(int size)
+{
+	void	*bl;
+
+	bl = mmap(NULL, size, PROT_READ | PROT_WRITE, \
+				MAP_ANON | MAP_PRIVATE, -1, 0);
+	if (!bl)
+		printf("Error: mmap allocation of size %d: no space found\n", size);
+	if (g_dib->big_nb >= \
+		(getpagesize() - ((int)sizeof(t_dib)) / 3) / (int)sizeof(t_alloc *))
+		double_dib_size();
+	(g_dib->big_alc)[g_dib->big_nb] = bl;
+	g_dib->big_nb += 1;
+	return (bl);
+}
+
 //TODO  munmap
 //TODO	size_t
-void	*ft_malloc(t_dib *dib, int size)
+void	*ft_malloc(int size)
 {
 	t_alloc *alc;
 	int		fit;
@@ -103,20 +131,11 @@ void	*ft_malloc(t_dib *dib, int size)
 	void	*bl;
 
 	if (size > SMALL_LIM)
-	{
-		bl = mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
-		if (!bl)
-			printf("Error: mmap allocation of size %d: no space found\n", size);
-		if (dib->big_nb >= (getpagesize() - ((int)sizeof(t_dib)) / 3) / (int)sizeof(t_alloc *))
-			dib = double_dib_size(dib);
-		(dib->big_alc)[dib->big_nb] = bl;
-		dib->big_nb += 1;
-		return (bl);
-	}
+		bl = ft_big_malloc(size);
 	ind = -1;
 	while (ind < 0)
 	{
-		alc = get_alloc_zone(dib, size);
+		alc = get_alloc_zone(size);
 		fit = find_fit(alc, size);
 		ind = find_block_index(alc, fit);
 	}

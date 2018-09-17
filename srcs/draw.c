@@ -6,11 +6,13 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/13 11:29:11 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/14 16:40:53 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/17 12:13:33 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
+
+extern t_dib	*g_dib;
 
 void	print_block(void *bl)
 {
@@ -109,7 +111,7 @@ void	print_total(t_alloc *alc)
 		print_block(bl);
 		size = ((t_head *)bl)->size;
 		if (!size)
-			break;
+			break ;
 		i += size;
 	}
 	printf("\n");
@@ -141,31 +143,33 @@ void	print_zone(t_alloc *alc, char *op, void *arg)
 	usleep(SPEED);
 }
 
-int		find_zone_ind(t_dib *dib, t_alloc *alc)
+int		find_zone_ind(t_alloc *alc)
 {
 	int		i;
 
 	i = 0;
 	if (alc->max == TINY_MAX)
 	{
-		while (i < dib->tiny_nb && (dib->tiny_alc)[i] != alc)
+		while (i < g_dib->tiny_nb && (g_dib->tiny_alc)[i] != alc)
 			i++;
 	}
 	else
 	{
-		while (i < dib->small_nb && (dib->small_alc)[i] != alc)
+		while (i < g_dib->small_nb && (g_dib->small_alc)[i] != alc)
 			i++;
 	}
 	return (i);
 }
 
-void	print_header(t_dib *dib, t_alloc *alc)
+void	print_header(t_alloc *alc)
 {
 	int		i;
 	int		size;
 
 	printf("\033[H");
-	printf("\n\tNUMBER OF ZONES:\n\tTiny Zones : %d\t\tSmall Zones : %d\t\tBig Zones : %d\n\n", dib->tiny_nb, dib->small_nb, dib->big_nb);
+	printf("\n\tNUMBER OF ZONES:\n\tTiny Zones : %d\t\tSmall Zones \
+				: %d\t\tBig Zones : %d\n\n", \
+				g_dib->tiny_nb, g_dib->small_nb, g_dib->big_nb);
 	if (alc)
 	{
 		printf("\tSelected Zone:\t");
@@ -173,7 +177,7 @@ void	print_header(t_dib *dib, t_alloc *alc)
 			printf("tiny #");
 		else
 			printf("small #");
-		printf("%d\n\n", find_zone_ind(dib, alc) + 1);
+		printf("%d\n\n", find_zone_ind(alc) + 1);
 		i = 0;
 		size = alc->max - alc->min + 3 + 7;
 		while (i++ < size)
