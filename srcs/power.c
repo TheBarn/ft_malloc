@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 16:34:10 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/13 09:36:53 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/17 13:22:48 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,13 @@ int		power_of_two(int pow)
 	i = 0;
 	num = 1;
 	if (pow < 0 || pow > 30)
-		return 0;
+		return (0);
 	while (i < pow)
 	{
 		num = 2 * num;
 		i++;
 	}
-	return(num);
+	return (num);
 }
 
 int		power_of_two_ind(int num)
@@ -34,14 +34,14 @@ int		power_of_two_ind(int num)
 	int		i;
 
 	if (num > INT_MAX)
-		return(0);
+		return (0);
 	i = 0;
 	while (num > 1 && num % 2 == 0)
 	{
 		num = num / 2;
 		i++;
 	}
-	return i;
+	return (i);
 }
 
 int		sum_power_of_two(int start, int end)
@@ -54,5 +54,5 @@ int		sum_power_of_two(int start, int end)
 		nb += power_of_two(start);
 		start++;
 	}
-	return nb;
+	return (nb);
 }
