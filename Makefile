@@ -6,7 +6,7 @@
 #    By: barnout <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/09/11 09:10:24 by barnout           #+#    #+#              #
-#    Updated: 2018/09/17 16:32:08 by barnout          ###   ########.fr        #
+#    Updated: 2018/09/18 17:24:07 by barnout          ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 
@@ -25,7 +25,7 @@ LINK_NAME = libft_malloc.so
 INC_DIR = ./includes
 C_FLAGS = -Wall -Wextra -Werror
 I_FLAGS = -I$(INC_DIR) -I$(LIBFT)
-SRC = malloc.c power.c ini.c free.c draw.c realloc.c distribute.c page.c utils.c
+SRC = malloc.c power.c ini.c free.c draw.c realloc.c distribute.c page.c utils.c show_mem.c
 O_DIR = ./objs
 S_DIR = ./srcs
 INCLUDES = malloc.h

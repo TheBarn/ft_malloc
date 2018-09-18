@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/12 15:58:31 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/17 14:38:35 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/18 16:52:07 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,8 +62,8 @@ void	*get_new_zone(int zn_size)
 void	*make_table(t_alloc *alc)
 {
 	int		ind;
-	int		nb;
-	int		size;
+	size_t	nb;
+	size_t	size;
 	void	**table;
 
 	ind = alc->max;
@@ -76,10 +76,11 @@ void	*make_table(t_alloc *alc)
 		throw_error("Error: mmap allocation: no space found\n");
 		return (NULL);
 	}
-	memset(table, 0, size);
+//	memset(table, 0, size);
 	return (table);
 }
 
+//TODO norme on libft
 t_alloc	*make_alloc(int min, int max)
 {
 	t_alloc	*alc;

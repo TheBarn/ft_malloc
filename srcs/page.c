@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/14 11:46:16 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/17 14:40:22 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/18 15:09:36 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,20 +56,23 @@ void		ini_dib(void)
 	int		left;
 	int		offset;
 
-	pg = mmap(NULL, getpagesize(), PROT_READ | PROT_WRITE, \
-				MAP_ANON | MAP_PRIVATE, -1, 0);
-	if (!pg)
-		throw_error("Error: mmap allocation: no space found\n");
-	dib = (t_dib *)pg;
-	offset = (int)sizeof(t_dib);
-	left = getpagesize() - offset;
-	dib->tiny_alc = (t_alloc **)(&pg[offset]);
-	dib->small_alc = (t_alloc **)(&pg[offset + left / 3]);
-	dib->big_alc = (void **)(&pg[offset + (left / 3) * 2]);
-	dib->tiny_nb = 0;
-	dib->small_nb = 0;
-	dib->big_nb = 0;
-	dib->size = 1;
-	g_dib = dib;
-	print_header(NULL);
+	if (!g_dib)
+	{
+		pg = mmap(NULL, getpagesize(), PROT_READ | PROT_WRITE, \
+				  MAP_ANON | MAP_PRIVATE, -1, 0);
+		if (!pg)
+			throw_error("Error: mmap allocation: no space found\n");
+		dib = (t_dib *)pg;
+		offset = (int)sizeof(t_dib);
+		left = getpagesize() - offset;
+		dib->tiny_alc = (t_alloc **)(&pg[offset]);
+		dib->small_alc = (t_alloc **)(&pg[offset + left / 3]);
+		dib->big_alc = (void **)(&pg[offset + (left / 3) * 2]);
+		dib->tiny_nb = 0;
+		dib->small_nb = 0;
+		dib->big_nb = 0;
+		dib->size = 1;
+		g_dib = dib;
+		print_header(NULL);
+	}
 }

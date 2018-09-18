@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/13 09:41:40 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/17 14:37:20 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/18 17:54:07 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,11 +88,16 @@ t_alloc	*find_zone(void *ptr)
 	int		i;
 
 	i = 0;
+	ft_putchar('k');
+	ft_putnbr(g_dib->tiny_nb);
 	while (i < g_dib->tiny_nb)
 	{
+		ft_putchar('l');
 		alc = (g_dib->tiny_alc)[i];
+		ft_putchar('m');
 		if (ptr >= alc->zn && ptr < alc->zn + power_of_two(alc->max))
 			return (alc);
+		ft_putchar('n');
 		i++;
 	}
 	i = 0;
@@ -113,19 +118,39 @@ void	free(void *ptr)
 	t_head	*h;
 	t_alloc	*alc;
 
+	show_alloc_mem();
+	ft_putstr("\nfree: ");
+	ft_put_size_t((size_t)ptr);
+	ft_putchar('\n');
 	if (ptr)
 	{
+		ft_putchar('a');
+		ini_dib();
 		alc = find_zone(ptr);
+		if (!alc)
+		{
+			throw_error("Error: pointer being freed was not allocated\n");
+			return ;
+		}
+		ft_putchar('?');
 		print_header(alc);
+		ft_putchar('b');
 		bl = ptr - HEAD_SIZE;
 		h = (t_head *)bl;
-		if (alc != ptr && (!alc || h->sym != SYM || h->free != 0))
+		ft_putchar('c');
+		ft_put_size_t((size_t)alc);
+		ft_putchar(' ');
+		ft_putchar(h->sym);
+		ft_putnbr(h->free);
+		if (h->sym != SYM || h->free != 0)
 			throw_error("Error: pointer being freed was not allocated\n");
 		else if (alc != ptr)
 		{
+			ft_putchar('d');
 			h->free = 1;
 			merge_bud(alc, bl);
 			print_zone(alc, "free", ptr);
+			ft_putchar('e');
 		}
 	}
 }

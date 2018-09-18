@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 16:34:10 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/17 14:17:04 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/18 15:21:18 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,9 +62,9 @@ int		power_of_two_ind(int num)
 	return (i);
 }
 
-int		sum_power_of_two(int start, int end)
+size_t	sum_power_of_two(int start, int end)
 {
-	int		nb;
+	size_t	nb;
 
 	nb = 0;
 	while (start <= end)

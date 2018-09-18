@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 09:07:14 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/17 15:54:44 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/18 17:53:53 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,17 +129,35 @@ void	*malloc(size_t size)
 	int		ind;
 	void	*bl;
 
-	if (size > SMALL_LIM)
+	ini_dib();
+	ft_putstr("\nmalloc: ");
+	ft_putnbr(size);
+	ft_putchar('\n');
+	if (size > power_of_two(SMALL_MAX) / 100 - HEAD_SIZE)
 		bl = ft_big_malloc(size);
+	ft_putchar('a');
 	ind = -1;
+	ft_putchar('b');
 	while (ind < 0)
 	{
+		ft_putchar('c');
 		alc = get_alloc_zone(size);
+		ft_putchar('d');
 		fit = find_fit(alc, size);
+		ft_putchar('e');
 		ind = find_block_index(alc, fit);
+		ft_putchar('f');
+		ft_putnbr(ind);
+		ft_putchar('g');
 	}
+	ft_putchar('h');
 	print_zone(alc, "malloc", &size);
+	ft_putchar('i');
 	bl = split_block(alc, ind, fit);
+	ft_putchar('j');
 	print_zone(alc, "malloc", &size);
+	ft_putstr("\nptr: ");
+	ft_put_size_t((size_t)(bl + HEAD_SIZE));
+	ft_putchar('\n');
 	return (bl + HEAD_SIZE);
 }
