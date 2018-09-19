@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/12 15:58:31 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/19 15:30:42 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/19 17:47:58 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ int		find_seq_start(t_alloc *alc, int ind)
 {
 	int		s;
 
-	s = sum_power_of_two(alc->max - ind + 1, alc->max - alc->min);
+	s = sum_power_of_two(0, alc->max - ind - 1);
 	return (s);
 }
 
@@ -33,10 +33,15 @@ int		write_header_in_table(t_alloc *alc, int ad, int bl_size)
 	len = power_of_two(alc->max - ind);
 	while (i < len && (alc->table)[s + i] != 0)
 		i++;
+	ft_putstr("TABLE: ");
+	ft_putnbr(ad);
+	ft_putchar(' ');
+	ft_putnbr(s + i);
+	ft_putchar('\n');
 	if (ad)
 		alc->table[s + i] = ad;
 	else
-		alc->table[s = i] = -1;
+		alc->table[s + i] = -1;
 	return (s + i);
 }
 
@@ -75,13 +80,11 @@ void	*get_new_zone(int zn_size)
 
 int		*make_table(t_alloc *alc)
 {
-	int		ind;
 	size_t	nb;
 	size_t	size;
 	int		*table;
 
-	ind = alc->max;
-	nb = sum_power_of_two(alc->min, ind);
+	nb = sum_power_of_two(0, alc->max - alc->min);
 	size = nb * (int)sizeof(int);
 	table = (int *)mmap(NULL, size, PROT_READ | PROT_WRITE,				\
 										MAP_ANON | MAP_PRIVATE, -1, 0);
@@ -126,6 +129,6 @@ t_alloc	*make_alloc(int min, int max)
 	alc->table = make_table(alc);
 	if (!alc->table)
 		return (NULL);
-	write_header(alc, 0, 1, zn_size);
+	write_header(alc, alc->zn, 1, zn_size);
 	return (alc);
 }

@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/13 09:41:40 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/19 15:31:01 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/19 17:30:35 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,10 +118,10 @@ void	free(void *ptr)
 	t_head	*h;
 	t_alloc	*alc;
 
-	show_alloc_mem();
 	ft_putstr("\nfree: ");
 	ft_putptr(ptr);
 	ft_putchar('\n');
+	show_alloc_mem();
 	if (ptr)
 	{
 		ini_dib();

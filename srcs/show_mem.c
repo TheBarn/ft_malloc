@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/18 17:23:07 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/19 15:33:24 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/19 17:38:33 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,14 @@ void	show_alloc(t_alloc *alc)
 	size_t		len;
 	size_t		i;
 
-	len = sum_power_of_two(alc->min, alc->max);
+	ft_putstr("!\n");
+	ft_putptr(alc);
+	ft_putchar('\n');
+	ft_putnbr(alc->max);
+	ft_putchar('\n');
+	ft_putnbr(alc->min);
+	len = sum_power_of_two(0, alc->max - alc->min);
+	ft_putchar('\n');
 	i = 0;
 	while (i < len)
 	{
@@ -78,6 +85,9 @@ void	show_zone(char tiny)
 	alc_ar = tiny ? g_dib->tiny_alc : g_dib->small_alc;
 	i = 0;
 	nb = tiny ? g_dib->tiny_nb : g_dib->small_nb;
+	ft_putstr("ZN: ");
+	ft_putnbr(nb);
+	ft_putchar('\n');
 	while (i < nb)
 		show_alloc(alc_ar[i++]);
 }

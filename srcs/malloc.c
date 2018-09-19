@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 09:07:14 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/19 15:29:26 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/19 17:47:14 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,15 +26,23 @@ int		find_fit(t_alloc *alc, size_t size)
 
 int		get_ad(t_alloc *alc, void *bl)
 {
-	return ((int)((uintptr_t)bl - (uintptr_t)alc));
+	int		ad;
+
+	ft_putstr("AD: ");
+	ft_putptr((void *)alc);
+	ft_putchar(' ');
+	ft_putptr(bl);
+	ft_putchar('\n');
+	ad = (int)((uintptr_t)bl - (uintptr_t)(alc->zn));
+	return (ad);
 }
 
 void	*get_block(t_alloc *alc, int ad)
 {
 	if (ad > 0)
-		return ((void *)alc + ad);
+		return (alc->zn + ad);
 	else
-		return ((void *)alc);
+		return (alc->zn);
 }
 
 int		find_in_seq(t_alloc *alc, int s, int len)
@@ -45,10 +53,17 @@ int		find_in_seq(t_alloc *alc, int s, int len)
 
 	i = 0;
 	ad = 0;
+	ft_putchar('\n');
+	ft_putnbr(s);
+	ft_putchar('\n');
+	ft_putnbr(len);
+	ft_putchar('\n');
 	while (i < len)
 	{
 		if (alc->table[s + i])
 		{
+			ft_putchar('H');
+			ft_putnbr(alc->table[s + i]);
 			h = (t_head *)(get_block(alc, alc->table[s + i]));
 			if (h->free == 1)
 			{
@@ -69,10 +84,17 @@ int		find_block_index(t_alloc *alc, int fit)
 	int		ind;
 	int		s;
 	int		len;
+	int		tmp;
 
-	s = find_seq_start(alc, fit);
-	len = sum_power_of_two(0, alc->max - fit);
-	ind = find_in_seq(alc, s, len);
+	tmp = fit;
+	ind = -1;
+	while (ind == -1 && tmp <= alc->max)
+	{
+		s = find_seq_start(alc, tmp);
+		len = power_of_two(alc->max - tmp);
+		ind = find_in_seq(alc, s, len);
+		tmp++;
+	}
 	if (ind == -1)
 	{
 		alc->left = power_of_two(fit - 1);
@@ -102,35 +124,19 @@ void	*split_block(t_alloc *alc, int ind, int fit)
 	void	*bl;
 	int		bl_size;
 	int		ad;
-	void	*bud;
 
-	ft_putstr("SPLIT:\n");
-	ft_putnbr(ind);
-	ft_putchar('\n');
-	ft_putnbr(fit);
-	ft_putchar('\n');
 	ad = alc->table[ind];
 	bl = get_block(alc, ad);
 	bl_size = ((t_head *)bl)->size;
-	ft_putchar(((t_head *)bl)->sym);
-	ft_putnbr(bl_size);
 	if (fit == power_of_two_ind(bl_size))
 	{
 		((t_head *)bl)->free = 0;
 		return (bl);
 	}
 	alc->table[ind] = 0;
-	ind = write_header(alc, bl, 1, bl_size / 2);
-	ft_putptr(bl);
-	ft_putchar('\n');
+	ind = write_header(alc, bl, 0, bl_size / 2);
 	show_alloc_mem();
-	ft_putptr((void *)alc);
-	ft_putchar('\n');
-	ft_putchar('\n');
-	ft_putnbr(bl_size);
-	ft_putchar('\n');
-	bud = find_buddy(alc, bl);
-	write_header(alc, bud, 1, bl_size / 2);
+	write_header(alc, bl + bl_size / 2, 1, bl_size / 2);//
 	print_zone(alc, "malloc", NULL);
 	bl = split_block(alc, ind, fit);
 	return (bl);
@@ -164,21 +170,31 @@ void	*malloc(size_t size)
 	ft_putstr("\nmalloc: ");
 	ft_putnbr(size);
 	ft_putchar('\n');
+	ft_putchar('a');
 	if (size > power_of_two(SMALL_MAX) / 100 - HEAD_SIZE)
 		bl = ft_big_malloc(size);
+	ft_putchar('b');
 	ind = -1;
 	while (ind < 0)
 	{
+		ft_putchar('c');
 		alc = get_alloc_zone(size);
+		ft_putchar('d');
 		fit = find_fit(alc, size);
+		ft_putchar('e');
 		ind = find_block_index(alc, fit);
+		ft_putchar('f');
 		ft_putnbr(ind);
 	}
 	print_zone(alc, "malloc", &size);
+	ft_putchar('g');
 	bl = split_block(alc, ind, fit);
+	ft_putchar('h');
 	print_zone(alc, "malloc", &size);
 	ft_putstr("\nptr: ");
-	ft_put_size_t((size_t)(bl + HEAD_SIZE));
+	ft_putptr((bl + HEAD_SIZE));
 	ft_putchar('\n');
+	show_alloc_mem();
+	ft_putstr("\nEND\n");
 	return (bl + HEAD_SIZE);
 }
