@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/13 14:48:26 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/18 17:11:06 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/19 11:04:38 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ void	*realloc(void *src, size_t size)
 	t_alloc	*alc;
 
 	ft_putstr("\nrealloc: ");
-	ft_put_size_t((size_t)src);
+	ft_putptr(src);
 	ft_putchar(' ');
 	ft_put_size_t(size);
 	ft_putchar('\n');

@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/18 17:23:07 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/18 18:13:10 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/19 12:12:13 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,9 +45,9 @@ void	show_block(void	*bl)
 	if (h->sym == SYM && h->free == 0)
 	{
 		size = h->size;
-		ft_putptr(bl);
+		ft_putptr(bl + HEAD_SIZE);
 		ft_putstr(" - ");
-		ft_putptr(bl + size);
+		ft_putptr(bl + size + HEAD_SIZE);
 		ft_putstr(" : ");
 		ft_putnbr(size);
 		ft_putstr(" octects\n");
@@ -69,20 +69,64 @@ void	show_alloc(t_alloc *alc)
 	}
 }
 
-void	show_tiny_zone()
+void	show_zone(char tiny)
 {
 	t_alloc		**alc_ar;
 	int			nb;
 	int			i;
 
-	alc_ar = g_dib->tiny_alc;
+	alc_ar = tiny ? g_dib->tiny_alc : g_dib->small_alc;
 	i = 0;
-	nb = g_dib->tiny_nb;
+	nb = tiny ? g_dib->tiny_nb : g_dib->small_nb;
 	while (i < nb)
 		show_alloc(alc_ar[i++]);
 }
 
+void	show_large()
+{
+	int		i;
+	int		nb;
+	void	*bl;
+
+	i = 0;
+	nb = g_dib->big_nb;
+	while (i < nb)
+	{
+		bl = (g_dib->big_alc)[i++];
+		show_block(bl);
+	}
+}
+
+void	show_add(char tiny)
+{
+	int		i;
+	t_alloc	**alc_ar;
+	t_alloc	*alc;
+	int		nb;
+
+	i = 0;
+	alc_ar = tiny ? g_dib->tiny_alc : g_dib->small_alc;
+	nb = tiny ? g_dib->tiny_nb : g_dib->small_nb;
+	while (i < nb)
+	{
+		alc = alc_ar[i];
+		ft_putchar(' ');
+		ft_putptr((void *)alc);
+		i++;
+	}
+}
+
 void	show_alloc_mem()
 {
-	show_tiny_zone();
+	ft_putstr("TINY:");
+	show_add(1);
+	ft_putchar('\n');
+	show_zone(1);
+	ft_putstr("SMALL:");
+	show_add(0);
+	ft_putchar('\n');
+	show_zone(0);
+	ft_putstr("LARGE:\n");
+	show_large();
+	ft_putchar('\n');
 }

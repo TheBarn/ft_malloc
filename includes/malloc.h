@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 09:07:48 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/18 17:23:49 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/19 11:05:45 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,5 +55,6 @@ void	print_header(t_alloc *alc);
 int		count_digit(int n);
 void	throw_error(char *msg);
 void	show_alloc_mem();
+void	ft_putptr(void *ptr);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/12 15:58:31 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/18 16:52:07 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/19 12:36:03 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,13 +27,19 @@ int		write_header_in_table(t_alloc *alc, void *bl, int bl_size)
 	int		len;
 	int		ind;
 
+	ft_putchar('r');
 	ind = power_of_two_ind(bl_size);
+	ft_putchar('s');
 	s = find_seq_start(alc, ind);
+	ft_putchar('t');
 	i = 0;
 	len = power_of_two(alc->max - ind);
+	ft_putchar('u');
 	while (i < len && (alc->table)[s + i] != NULL)
 		i++;
+	ft_putchar('v');
 	alc->table[s + i] = bl;
+	ft_putchar('w');
 	return (s + i);
 }
 
@@ -41,10 +47,24 @@ int		write_header(t_alloc *alc, void *bl, char fr, int bl_size)
 {
 	int		ind;
 
+	ft_putstr("\nWRITE: ");
+	ft_putptr((void *)alc);
+	ft_putchar(' ');
+	ft_putptr(bl);
+	ft_putchar(' ');
+	ft_putnbr((int)fr);
+	ft_putchar(' ');
+	ft_putnbr(bl_size);
+	ft_putchar('\n');
+	ft_putchar('m');
 	((t_head *)bl)->sym = SYM;
+	ft_putchar('n');
 	((t_head *)bl)->free = fr;
+	ft_putchar('o');
 	((t_head *)bl)->size = bl_size;
+	ft_putchar('p');
 	ind = write_header_in_table(alc, bl, bl_size);
+	ft_putchar('q');
 	return (ind);
 }
 
@@ -96,8 +116,13 @@ t_alloc	*make_alloc(int min, int max)
 	}
 	alc->min = min;
 	alc->max = max;
+	ft_putchar('\n');
+	ft_putnbr(max);
 	//TODO multiple of getpagesize()
 	zn_size = power_of_two(max);
+	ft_putstr("\nZN_SIZE: ");
+	ft_putnbr(zn_size);
+	ft_putchar('\n');
 	alc->left = zn_size - HEAD_SIZE;
 	zn = get_new_zone(zn_size);
 	if (!zn)
