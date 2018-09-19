@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 09:07:14 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/18 17:53:53 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/19 12:42:51 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,26 +82,50 @@ void	*find_buddy(void *bl)
 	bud = xor_size(bl, h->size);
 	return (bud);
 }
-
+//TODO get rid of buddies
 void	*split_block(t_alloc *alc, int ind, int fit)
 {
 	void	*bl;
 	int		bl_size;
-	void	*bud;
 
+	ft_putchar('\n');
+	ft_putstr("SPLIT:\n");
+	ft_putnbr(ind);
+	ft_putchar('\n');
+	ft_putnbr(fit);
+	ft_putchar('\n');
 	bl = alc->table[ind];
+	ft_putchar('a');
 	bl_size = ((t_head *)bl)->size;
+	ft_putchar(((t_head *)bl)->sym);
+	ft_putnbr(bl_size);
+	ft_putchar('b');
 	if (fit == power_of_two_ind(bl_size))
 	{
 		((t_head *)bl)->free = 0;
 		return (bl);
 	}
+	ft_putchar('c');
 	alc->table[ind] = NULL;
+	ft_putchar('d');
 	ind = write_header(alc, bl, 1, bl_size / 2);
-	bud = find_buddy(bl);
-	write_header(alc, bud, 1, bl_size / 2);
+	ft_putchar('e');
+	ft_putchar('\n');
+	ft_putptr(bl);
+	ft_putchar('\n');
+	ft_putchar('f');
+	show_alloc_mem();
+	ft_putptr((void *)alc);
+	ft_putchar('\n');
+	ft_putchar('\n');
+	ft_putnbr(bl_size);
+	ft_putchar('\n');
+	write_header(alc, bl + bl_size / 2, 1, bl_size / 2);
+	ft_putchar('g');
 	print_zone(alc, "malloc", NULL);
+	ft_putchar('h');
 	bl = split_block(alc, ind, fit);
+	ft_putchar('i');
 	return (bl);
 }
 
@@ -109,7 +133,7 @@ void	*ft_big_malloc(size_t size)
 {
 	void	*bl;
 
-	bl = mmap(NULL, size, PROT_READ | PROT_WRITE, \
+	bl = mmap(NULL, size + HEAD_SIZE, PROT_READ | PROT_WRITE, \
 				MAP_ANON | MAP_PRIVATE, -1, 0);
 	if (!bl)
 		throw_error("Error: mmap: no space found\n");
@@ -118,7 +142,7 @@ void	*ft_big_malloc(size_t size)
 		double_dib_size();
 	(g_dib->big_alc)[g_dib->big_nb] = bl;
 	g_dib->big_nb += 1;
-	return (bl);
+	return (bl + HEAD_SIZE);
 }
 
 //TODO  munmap
