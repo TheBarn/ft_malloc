@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/13 11:29:11 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/17 14:40:54 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/19 15:32:27 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ void	print_line(t_alloc *alc, int ind)
 	int		s;
 	int		len;
 	int		i;
-	void	*bl;
+	int		ad;
 	int		size;
 
 	print_ind(alc, ind);
@@ -80,9 +80,9 @@ void	print_line(t_alloc *alc, int ind)
 	i = 0;
 	while (i < len)
 	{
-		bl = (alc->table)[s + i];
-		if (bl)
-			print_block(bl);
+		ad = (alc->table)[s + i];
+		if (ad)
+			print_block(get_block(alc, ad));
 		else
 			print_space(size);
 		i++;

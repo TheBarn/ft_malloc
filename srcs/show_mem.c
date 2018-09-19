@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/18 17:23:07 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/19 12:12:13 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/19 15:33:24 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ void	show_alloc(t_alloc *alc)
 	while (i < len)
 	{
 		if ((alc->table)[i])
-			show_block((alc->table)[i]);
+			show_block(get_block(alc, (alc->table)[i]));
 		i++;
 	}
 }

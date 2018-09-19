@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 09:07:48 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/19 11:05:45 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/19 15:32:51 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,8 @@ size_t	sum_power_of_two(int start, int end);
 int		write_header(t_alloc *alc, void *bl, char fr, int bl_size);
 t_alloc	*ini_alloc(void);
 int		find_seq_start(t_alloc *alc, int ind);
-void	*xor_size(void *ptr, int size);
 void	*malloc(size_t size);
-void	*find_buddy(void *bl);
+void	*find_buddy(t_alloc *alc, void *bl);
 void	print_zone(t_alloc *alc, char *op, void *arg);
 void	*realloc(void *src, size_t size);
 void	erase_buddies(t_alloc *alc, void *bl, void *bud);
@@ -56,5 +55,7 @@ int		count_digit(int n);
 void	throw_error(char *msg);
 void	show_alloc_mem();
 void	ft_putptr(void *ptr);
+int		get_ad(t_alloc *alc, void *bl);
+void	*get_block(t_alloc *alc, int ad);
 
 #endif

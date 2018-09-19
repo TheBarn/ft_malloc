@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/13 14:48:26 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/19 11:04:38 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/19 15:22:09 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	grow_block(t_alloc *alc, void *bl, size_t size)
 	h = (t_head*)bl;
 	while ((size_t)(h->size - HEAD_SIZE) < size)
 	{
-		bud = find_buddy(bl);
+		bud = find_buddy(alc, bl);
 		bh = (t_head *)bud;
 		erase_buddies(alc, bl, bud);
 		bh->sym = 0;
@@ -41,7 +41,7 @@ char	is_enough_space(t_alloc *alc, void *bl, size_t size)
 	mock_size = ((t_head *)bl)->size;
 	while (mock_size <= power_of_two(alc->max) / 2)
 	{
-		bud = xor_size(bl, mock_size);
+		bud = find_buddy(alc, bl);
 		if (bud < bl)
 			return (0);
 		bh = (t_head *)bud;

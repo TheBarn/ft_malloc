@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/17 13:24:26 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/17 13:25:53 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/19 14:22:35 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 typedef struct		s_alloc
 {
 	void		*zn;
-	void		**table;
+	int			*table;
 	int			min;
 	int			max;
 	int			left;
