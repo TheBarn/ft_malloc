@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/18 17:23:07 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/20 17:17:56 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/20 17:44:42 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -214,7 +214,7 @@ void	show_add(char tiny)
 	{
 		alc = alc_ar[i];
 		ft_putchar(' ');
-		ft_putptr((void *)alc);
+		ft_putptr(alc->zn);
 		i++;
 	}
 }

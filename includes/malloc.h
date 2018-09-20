@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 09:07:48 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/20 15:52:33 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/20 17:56:50 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 # define TINY_MIN 4
 # define TINY_MAX 15
-# define SMALL_MIN 15
+# define SMALL_MIN 9
 # define SMALL_MAX 30
 # define HEAD_SIZE ((int)sizeof(t_head))
 # define SYM '*'

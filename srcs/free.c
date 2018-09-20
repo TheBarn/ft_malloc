@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/13 09:41:40 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/20 17:20:39 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/20 18:01:56 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,36 +127,24 @@ void	free(void *ptr)
 	t_head	*h;
 	t_alloc	*alc;
 
-	ft_putstr("\nfree: ");
-	ft_putptr(ptr);
-	ft_putchar('\n');
 	if (ptr)
 	{
-		ft_putchar('a');
 		ini_dib();
 		alc = find_zone(ptr);
-		ft_putchar('b');
 		if (!alc)
 		{
 			throw_error("Error: pointer being freed was not allocated\n");
 			return ;
 		}
 		print_header(alc);
-		ft_putchar('c');
 		bl = ptr - HEAD_SIZE;
 		h = (t_head *)bl;
-		ft_putchar(h->sym);
-		ft_putnbr(h->free);
-		ft_putchar('d');
 		if (h->sym != SYM || h->free != 0)
 			throw_error("Error: pointer being freed was not allocated\n");
 		else if (alc != ptr)
 		{
-			ft_putchar('e');
 			h->free = 1;
-			ft_putchar('f');
 			merge_bud(alc, bl);
-			ft_putchar('g');
 			print_zone(alc, "free", ptr);
 		}
 	}

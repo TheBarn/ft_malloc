@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/14 09:40:07 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/20 14:03:59 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/20 17:58:22 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,8 +79,12 @@ t_alloc		*get_alloc_zone(size_t size)
 	if (size <= 0 || size > power_of_two(SMALL_MAX) / 100 - HEAD_SIZE)
 		return (NULL);
 	if (size <= power_of_two(TINY_MAX) / 100 - HEAD_SIZE)
+	{
 		return (get_zone(size, 1));
+	}
 	if (size <= power_of_two(SMALL_MAX) / 100 - HEAD_SIZE)
+	{
 		return (get_zone(size, 0));
+	}
 	return (NULL);
 }

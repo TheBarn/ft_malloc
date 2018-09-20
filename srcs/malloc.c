@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 09:07:14 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/20 17:20:18 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/20 18:00:02 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ void	*split_block(t_alloc *alc, int ind, int size)
 	ad = alc->table[ind];
 	bl = get_block(alc, ad);
 	bl_size = get_block_size(bl);
-	if (sup_power_of_two(size) == bl_size)
+	if (sup_power_of_two(size) == bl_size || (size_t)bl_size <= power_of_two(alc->min))
 	{
 		write_header(alc, bl, 0, size);
 		((t_head *)bl)->free = 0;
@@ -153,33 +153,17 @@ void	*malloc(size_t size)
 	void	*bl;
 
 	ini_dib();
-	ft_putstr("\nmalloc: ");
-	ft_putnbr(size);
-	ft_putchar('\n');
-	ft_putchar('a');
 	if (size > power_of_two(SMALL_MAX) / 100 - HEAD_SIZE)
 		bl = ft_big_malloc(size);
-	ft_putchar('b');
 	ind = -1;
 	while (ind < 0)
 	{
-		ft_putchar('c');
 		alc = get_alloc_zone(size);
-		ft_putchar('d');
 		fit = find_fit(alc, size);
-		ft_putchar('e');
 		ind = find_block_index(alc, fit);
-		ft_putchar('f');
-		ft_putnbr(ind);
 	}
 	print_zone(alc, "malloc", &size);
-	ft_putchar('g');
 	bl = split_block(alc, ind, (int)size);
-	ft_putchar('h');
 	print_zone(alc, "malloc", &size);
-	ft_putstr("\nptr: ");
-	ft_putptr((bl + HEAD_SIZE));
-	ft_putchar('\n');
-	ft_putstr("\nEND\n");
 	return (bl + HEAD_SIZE);
 }

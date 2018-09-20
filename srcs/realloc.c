@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/13 14:48:26 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/20 17:17:15 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/20 18:02:21 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,20 +83,12 @@ void	*realloc(void *src, size_t size)
 	void	*ptr;
 	t_alloc	*alc;
 
-	ft_putstr("\nrealloc: ");
-	ft_putptr(src);
-	ft_putchar(' ');
-	ft_put_size_t(size);
-	ft_putchar('\n');
 	if (!src)
 		return (malloc(size));
 	ini_dib();
-	ft_putchar('a');
 	alc = find_zone(src);
-	ft_putchar('b');
 	bl = src - HEAD_SIZE;
 	h = (t_head *)bl;
-	ft_putchar('c');
 	if (!alc || h->sym != SYM || h->free != 0)
 	{
 		throw_error("Error: pointer being reallocated was not allocated\n");
@@ -104,9 +96,7 @@ void	*realloc(void *src, size_t size)
 	}
 	else
 	{
-		ft_putchar('d');
 		ptr = realloc_block(src, size, alc, bl);
-		ft_putchar('e');
 		return (ptr);
 	}
 }
