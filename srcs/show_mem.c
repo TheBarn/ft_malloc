@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/18 17:23:07 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/20 15:15:40 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/20 17:17:56 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,14 +49,10 @@ void	show_block(t_alloc *alc, int ad)
 		size = h->size;
 		ft_putptr(bl + HEAD_SIZE);
 		ft_putstr(" - ");
-		ft_putptr(bl + size + HEAD_SIZE);
+		ft_putptr(bl + size + HEAD_SIZE - 1);
 		ft_putstr(" : ");
 		ft_putnbr(size);
-		ft_putstr(" octects ");
-		ft_putnbr(ad);
-		ft_putchar(' ');
-		ft_putptr(find_buddy(alc, bl));
-		ft_putchar('\n');
+		ft_putstr(" octects\n");
 	}
 }
 /*

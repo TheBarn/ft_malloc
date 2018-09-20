@@ -6,13 +6,25 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/13 09:41:40 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/20 15:17:51 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/20 17:20:39 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
 
 extern t_dib	*g_dib;
+
+int		get_block_size(void *bl)
+{
+	t_head	*h;
+	int		size;
+	int		bl_size;
+
+	h = (t_head *)bl;
+	size = h->size;
+	bl_size = sup_power_of_two(size);
+	return (bl_size);
+}
 
 void	erase_buddies(t_alloc *alc, void *bl, void *bud)
 {
@@ -24,7 +36,7 @@ void	erase_buddies(t_alloc *alc, void *bl, void *bud)
 	int		bl_ad;
 	int		bud_ad;
 
-	ind = power_of_two_ind(((t_head *)bl)->size);
+	ind = power_of_two_ind(get_block_size(bl));
 	s = find_seq_start(alc, ind);
 	len = power_of_two(alc->max - ind);
 	i = 0;
@@ -47,45 +59,26 @@ void	erase_buddies(t_alloc *alc, void *bl, void *bud)
 int		merge_bud(t_alloc *alc, void *bl)
 {
 	void	*bud;
-	t_head	*h;
 	t_head	*bh;
 	int		size;
 
-	ft_putchar('i');
-	h = (t_head*)bl;
-	size = h->size;
-	ft_putchar('j');
+	size = get_block_size(bl);
 	if ((size_t)size == power_of_two(alc->max))
 		return (0);
-	ft_putchar('k');
 	bud = find_buddy(alc, bl);
-	ft_putchar('l');
 	bh = (t_head*)bud;
-	ft_putchar('?');
-	ft_putchar('\n');
-	ft_putptr(bl);
-	ft_putchar('\n');
-	ft_putptr(bud);
-	ft_putchar('\n');
-	if (bh && bh->sym == SYM && size == bh->size && bh->free == 1)
+	if (bh && bh->sym == SYM && size == get_block_size(bud) && bh->free == 1)
 	{
-		ft_putchar('m');
 		erase_buddies(alc, bl, bud);
-		ft_putchar('n');
 		if (bud < bl)
 			bl = bud;
 		bh->sym = 0;
-		ft_putchar('o');
-		write_header(alc, bl, 1, 2 * h->size);
-		ft_putchar('p');
-		if (alc->left < 2 * h->size)
-			alc->left = 2 * h->size;
+		write_header(alc, bl, 1, 2 * size);
+		if (alc->left < 2 * size)
+			alc->left = 2 * size;
 		print_zone(alc, "free", NULL);
-		ft_putchar('q');
 		merge_bud(alc, bl);
-		ft_putchar('r');
 	}
-	ft_putchar('s');
 	return (0);
 }
 
@@ -137,7 +130,6 @@ void	free(void *ptr)
 	ft_putstr("\nfree: ");
 	ft_putptr(ptr);
 	ft_putchar('\n');
-	show_alloc_mem();
 	if (ptr)
 	{
 		ft_putchar('a');

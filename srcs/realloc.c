@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/13 14:48:26 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/19 15:22:09 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/20 17:17:15 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,20 +16,21 @@ extern t_dib	*g_dib;
 
 void	grow_block(t_alloc *alc, void *bl, size_t size)
 {
-	t_head		*h;
 	void		*bud;
 	t_head		*bh;
+	int			bl_size;
 
-	h = (t_head*)bl;
-	while ((size_t)(h->size - HEAD_SIZE) < size)
+	bl_size = get_block_size(bl);
+	while ((size_t)(bl_size - HEAD_SIZE) < size)
 	{
 		bud = find_buddy(alc, bl);
 		bh = (t_head *)bud;
 		erase_buddies(alc, bl, bud);
 		bh->sym = 0;
-		write_header(alc, bl, 0, h->size * 2);
+		write_header(alc, bl, 0, bl_size * 2);
 		print_zone(alc, "realloc", &size);
 	}
+	write_header(alc, bl, 0, size);
 }
 
 char	is_enough_space(t_alloc *alc, void *bl, size_t size)
@@ -38,14 +39,14 @@ char	is_enough_space(t_alloc *alc, void *bl, size_t size)
 	t_head	*bh;
 	size_t	mock_size;
 
-	mock_size = ((t_head *)bl)->size;
+	mock_size = get_block_size(bl);
 	while (mock_size <= power_of_two(alc->max) / 2)
 	{
 		bud = find_buddy(alc, bl);
 		if (bud < bl)
 			return (0);
 		bh = (t_head *)bud;
-		if (bh->free != 1 || (size_t)bh->size != mock_size)
+		if (bh->free != 1 || (size_t)get_block_size(bud) != mock_size)
 			return (0);
 		if (mock_size * 2 - HEAD_SIZE >= size)
 			break ;
@@ -58,16 +59,16 @@ char	is_enough_space(t_alloc *alc, void *bl, size_t size)
 
 void	*realloc_block(void *src, size_t size, t_alloc *alc, void *bl)
 {
-	t_head	*h;
+	int		bl_size;
 	void	*ptr;
 
-	h = (t_head *)bl;
-	if (size <= (size_t)(h->size - HEAD_SIZE))
+	bl_size = get_block_size(bl);
+	if (size <= (size_t)(bl_size - HEAD_SIZE))
 		return (src);
 	if (alc == src || !is_enough_space(alc, bl, size))
 	{
 		ptr = malloc(size);
-		ft_memcpy(ptr, src, h->size - HEAD_SIZE);
+		ft_memcpy(ptr, src, bl_size - HEAD_SIZE);
 		free(src);
 		return (ptr);
 	}

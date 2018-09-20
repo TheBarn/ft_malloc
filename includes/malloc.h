@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 09:07:48 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/19 15:32:51 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/20 15:52:33 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@
 # include <unistd.h>
 # include "typedef.h"
 
+int		get_block_size(void *bl);
+int		sup_power_of_two(int nb);
 size_t	power_of_two(int pow);
 int		power_of_two_ind(int num);
 size_t	sum_power_of_two(int start, int end);

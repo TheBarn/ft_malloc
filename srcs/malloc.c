@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 09:07:14 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/20 15:23:51 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/20 17:20:18 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,20 +94,18 @@ int		find_block_index(t_alloc *alc, int fit)
 void	*find_buddy(t_alloc *alc, void *bl)
 {
 	void		*bud;
-	t_head		*h;
 	int			bl_size;
 	int			bl_ad;
 	int			bud_ad;
 
-	h = (t_head *)bl;
-	bl_size = h->size;
+	bl_size = get_block_size(bl);
 	bl_ad = get_ad(alc, bl);
 	bud_ad = bl_ad ^ bl_size;
 	bud = get_block(alc, bud_ad);
 	return (bud);
 }
-//TODO get rid of buddies
-void	*split_block(t_alloc *alc, int ind, int fit)
+
+void	*split_block(t_alloc *alc, int ind, int size)
 {
 	void	*bl;
 	int		bl_size;
@@ -115,17 +113,18 @@ void	*split_block(t_alloc *alc, int ind, int fit)
 
 	ad = alc->table[ind];
 	bl = get_block(alc, ad);
-	bl_size = ((t_head *)bl)->size;
-	if (fit == power_of_two_ind(bl_size))
+	bl_size = get_block_size(bl);
+	if (sup_power_of_two(size) == bl_size)
 	{
+		write_header(alc, bl, 0, size);
 		((t_head *)bl)->free = 0;
 		return (bl);
 	}
 	alc->table[ind] = 0;
-	ind = write_header(alc, bl, 0, bl_size / 2);
+	ind = write_header(alc, bl, 1, bl_size / 2);
 	write_header(alc, bl + bl_size / 2, 1, bl_size / 2);
 	print_zone(alc, "malloc", NULL);
-	bl = split_block(alc, ind, fit);
+	bl = split_block(alc, ind, size);
 	return (bl);
 }
 
@@ -175,13 +174,12 @@ void	*malloc(size_t size)
 	}
 	print_zone(alc, "malloc", &size);
 	ft_putchar('g');
-	bl = split_block(alc, ind, fit);
+	bl = split_block(alc, ind, (int)size);
 	ft_putchar('h');
 	print_zone(alc, "malloc", &size);
 	ft_putstr("\nptr: ");
 	ft_putptr((bl + HEAD_SIZE));
 	ft_putchar('\n');
-	show_alloc_mem();
 	ft_putstr("\nEND\n");
 	return (bl + HEAD_SIZE);
 }

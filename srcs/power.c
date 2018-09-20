@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 16:34:10 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/18 15:21:18 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/20 15:46:32 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,21 @@ int		count_digit(int n)
 		count++;
 	}
 	return (count);
+}
+
+int		sup_power_of_two(int nb)
+{
+	int		i;
+	int		p;
+
+	i = 0;
+	p = 1;
+	while (p < nb)
+	{
+		p = power_of_two(i);
+		i++;
+	}
+	return (p);
 }
 
 size_t	power_of_two(int pow)

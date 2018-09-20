@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/12 15:58:31 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/20 14:03:12 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/20 15:47:46 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,14 +40,16 @@ int		write_header_in_table(t_alloc *alc, int ad, int bl_size)
 	return (s + i);
 }
 
-int		write_header(t_alloc *alc, void *bl, char fr, int bl_size)
+int		write_header(t_alloc *alc, void *bl, char fr, int size)
 {
 	int		ind;
 	int		ad;
+	int		bl_size;
 
+	bl_size = sup_power_of_two(size);
 	((t_head *)bl)->sym = SYM;
 	((t_head *)bl)->free = fr;
-	((t_head *)bl)->size = bl_size;
+	((t_head *)bl)->size = size;
 	ad = get_ad(alc, bl);
 	ind = write_header_in_table(alc, ad, bl_size);
 	return (ind);

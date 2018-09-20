@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/13 11:29:11 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/19 15:32:27 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/20 15:54:59 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	print_block(void *bl)
 	int		c;
 
 	h = (t_head*)bl;
-	size = h->size;
+	size = get_block_size(bl);
 	j = 0;
 	if (h->free)
 		c = GREEN;
@@ -109,7 +109,7 @@ void	print_total(t_alloc *alc)
 	{
 		bl = &((alc->zn)[i]);
 		print_block(bl);
-		size = ((t_head *)bl)->size;
+		size = get_block_size(bl);
 		if (!size)
 			break ;
 		i += size;
