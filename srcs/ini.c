@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/12 15:58:31 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/19 17:47:58 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/20 14:03:12 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,6 @@ int		write_header_in_table(t_alloc *alc, int ad, int bl_size)
 	len = power_of_two(alc->max - ind);
 	while (i < len && (alc->table)[s + i] != 0)
 		i++;
-	ft_putstr("TABLE: ");
-	ft_putnbr(ad);
-	ft_putchar(' ');
-	ft_putnbr(s + i);
-	ft_putchar('\n');
 	if (ad)
 		alc->table[s + i] = ad;
 	else
@@ -50,15 +45,6 @@ int		write_header(t_alloc *alc, void *bl, char fr, int bl_size)
 	int		ind;
 	int		ad;
 
-	ft_putstr("\nWRITE: ");
-	ft_putptr((void *)alc);
-	ft_putchar(' ');
-	ft_putptr(bl);
-	ft_putchar(' ');
-	ft_putnbr((int)fr);
-	ft_putchar(' ');
-	ft_putnbr(bl_size);
-	ft_putchar('\n');
 	((t_head *)bl)->sym = SYM;
 	((t_head *)bl)->free = fr;
 	((t_head *)bl)->size = bl_size;
@@ -114,13 +100,8 @@ t_alloc	*make_alloc(int min, int max)
 	}
 	alc->min = min;
 	alc->max = max;
-	ft_putchar('\n');
-	ft_putnbr(max);
 	//TODO multiple of getpagesize()
 	zn_size = power_of_two(max);
-	ft_putstr("\nZN_SIZE: ");
-	ft_putnbr(zn_size);
-	ft_putchar('\n');
 	alc->left = zn_size - HEAD_SIZE;
 	zn = get_new_zone(zn_size);
 	if (!zn)

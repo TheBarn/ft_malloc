@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/18 17:23:07 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/19 17:38:33 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/20 15:15:40 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,11 +36,13 @@ void	ft_putptr(void *ptr)
 	ft_putptr_req(ad);
 }
 
-void	show_block(void	*bl)
+void	show_block(t_alloc *alc, int ad)
 {
+	void	*bl;
 	t_head	*h;
 	int		size;
 
+	bl = get_block(alc, ad);
 	h = (t_head *)bl;
 	if (h->sym == SYM && h->free == 0)
 	{
@@ -50,29 +52,127 @@ void	show_block(void	*bl)
 		ft_putptr(bl + size + HEAD_SIZE);
 		ft_putstr(" : ");
 		ft_putnbr(size);
-		ft_putstr(" octects\n");
+		ft_putstr(" octects ");
+		ft_putnbr(ad);
+		ft_putchar(' ');
+		ft_putptr(find_buddy(alc, bl));
+		ft_putchar('\n');
 	}
+}
+/*
+void	show_buddies(t_alloc *alc)
+{
+	size_t	len;
+	size_t	i;
+	int		ad;
+
+	ft_putstr("BUD:");
+	len = sum_power_of_two(0, alc->max - alc->min);
+	i = 0;
+	while (i < len)
+	{
+		ad = alc->table[i];
+		if (ad == -1)
+		{
+			ft_putchar(' ');
+			ft_putnbr(0);
+		}
+		else if (ad)
+		{
+			ft_putchar(' ');
+			ft_putnbr(ad);
+		}
+		i++;
+	}
+	ft_putchar('\n');
+}
+*/
+int		ft_max(int a, int b)
+{
+	if (a > b)
+		return (a);
+	return (b);
+}
+
+int		get_max_v(t_alloc *alc, size_t len)
+{
+	int		max_v;
+	size_t	i;
+	int		ad;
+
+	i = 0;
+	max_v = 0;
+	while (i < len)
+	{
+		ad = alc->table[i];
+		if (ad)
+		{
+			if (ad == -1)
+				ad = 0;
+			max_v = ft_max(max_v, ad);
+		}
+		i++;
+	}
+	return (max_v);
+}
+/*
+int		get_max_ad_ind(t_alloc *alc, size_t len, int max_v)
+{
+	size_t	max_ind;
+	size_t	i;
+	int		ad;
+
+	i = 0;
+	while (i < len)
+	{
+		ad = alc->table[i];
+		if (ad)
+		{
+			if (ad == -1)
+				ad = 0;
+			if (ad == mac_v)
+				return (i);
+		}
+		i++;
+	}
+	return (0);
+}
+*/
+int		get_next_ad(t_alloc *alc, size_t len, int pr)
+{
+	int		ad;
+	size_t	i;
+	int		nxt;
+
+	i = 0;
+	nxt = power_of_two(alc->max) + 1;
+	while (i < len)
+	{
+		ad = alc->table[i];
+		if (ad)
+		{
+			if (ad > pr && ad < nxt)
+				nxt = ad;
+		}
+		i++;
+	}
+	return (nxt);
 }
 
 void	show_alloc(t_alloc *alc)
 {
 	size_t		len;
-	size_t		i;
+	int			max_v;
+	int			ad;
 
-	ft_putstr("!\n");
-	ft_putptr(alc);
-	ft_putchar('\n');
-	ft_putnbr(alc->max);
-	ft_putchar('\n');
-	ft_putnbr(alc->min);
+//	show_buddies(alc);
 	len = sum_power_of_two(0, alc->max - alc->min);
-	ft_putchar('\n');
-	i = 0;
-	while (i < len)
+	max_v = get_max_v(alc, len);
+	ad = get_next_ad(alc, len, -2);
+	while (ad <= max_v)
 	{
-		if ((alc->table)[i])
-			show_block(get_block(alc, (alc->table)[i]));
-		i++;
+		show_block(alc, ad);
+		ad = get_next_ad(alc, len, ad);
 	}
 }
 
@@ -85,9 +185,6 @@ void	show_zone(char tiny)
 	alc_ar = tiny ? g_dib->tiny_alc : g_dib->small_alc;
 	i = 0;
 	nb = tiny ? g_dib->tiny_nb : g_dib->small_nb;
-	ft_putstr("ZN: ");
-	ft_putnbr(nb);
-	ft_putchar('\n');
 	while (i < nb)
 		show_alloc(alc_ar[i++]);
 }
@@ -103,7 +200,7 @@ void	show_large()
 	while (i < nb)
 	{
 		bl = (g_dib->big_alc)[i++];
-		show_block(bl);
+		show_block((t_alloc *)bl, 0); // WRONG!! show_block(bl);
 	}
 }
 

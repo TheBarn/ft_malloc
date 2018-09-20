@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 09:07:14 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/19 17:47:14 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/20 15:23:51 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,11 +28,6 @@ int		get_ad(t_alloc *alc, void *bl)
 {
 	int		ad;
 
-	ft_putstr("AD: ");
-	ft_putptr((void *)alc);
-	ft_putchar(' ');
-	ft_putptr(bl);
-	ft_putchar('\n');
 	ad = (int)((uintptr_t)bl - (uintptr_t)(alc->zn));
 	return (ad);
 }
@@ -53,17 +48,10 @@ int		find_in_seq(t_alloc *alc, int s, int len)
 
 	i = 0;
 	ad = 0;
-	ft_putchar('\n');
-	ft_putnbr(s);
-	ft_putchar('\n');
-	ft_putnbr(len);
-	ft_putchar('\n');
 	while (i < len)
 	{
 		if (alc->table[s + i])
 		{
-			ft_putchar('H');
-			ft_putnbr(alc->table[s + i]);
 			h = (t_head *)(get_block(alc, alc->table[s + i]));
 			if (h->free == 1)
 			{
@@ -113,9 +101,9 @@ void	*find_buddy(t_alloc *alc, void *bl)
 
 	h = (t_head *)bl;
 	bl_size = h->size;
-	bl_ad = (void *)alc - bl;
+	bl_ad = get_ad(alc, bl);
 	bud_ad = bl_ad ^ bl_size;
-	bud = (void *)alc + bud_ad;
+	bud = get_block(alc, bud_ad);
 	return (bud);
 }
 //TODO get rid of buddies
@@ -135,8 +123,7 @@ void	*split_block(t_alloc *alc, int ind, int fit)
 	}
 	alc->table[ind] = 0;
 	ind = write_header(alc, bl, 0, bl_size / 2);
-	show_alloc_mem();
-	write_header(alc, bl + bl_size / 2, 1, bl_size / 2);//
+	write_header(alc, bl + bl_size / 2, 1, bl_size / 2);
 	print_zone(alc, "malloc", NULL);
 	bl = split_block(alc, ind, fit);
 	return (bl);
