@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/14 09:40:07 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/24 12:02:27 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/24 16:10:00 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ t_alloc		*make_new_zone(char tiny)
 	max = tiny ? TINY_MAX : SMALL_MAX;
 	alc = make_alloc(min, max);
 	add_to_dib(alc, tiny);
-	print_header(alc);
+//	print_header(alc);
 	return (alc);
 }
 

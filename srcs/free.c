@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/13 09:41:40 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/24 11:24:23 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/24 16:09:30 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,16 +14,30 @@
 
 extern t_dib	*g_dib;
 
-int		get_block_size(void *bl)
+int		get_block_size(t_alloc *alc, void *bl)
 {
 	t_head	*h;
 	int		size;
 	int		bl_size;
+	int		tmp;
+	int		min;
 
 	h = (t_head *)bl;
 	size = h->size;
-	bl_size = sup_power_of_two(size + HEAD_SIZE);
-	return (bl_size);
+//	ft_putstr("SIZE IN BLOCK: ");
+//	ft_putnbr(size);
+//	ft_putstr("\nBLOCK SIZE: ");
+	bl_size = alc->size;
+	min = power_of_two(alc->min);
+	while (bl_size >= size + HEAD_SIZE && bl_size >= min)
+	{
+		tmp = bl_size;
+		bl_size /= 2;
+	}
+//	ft_putnbr(tmp);
+//	ft_putchar('\n');
+//	bl_size = sup_power_of_two(size + HEAD_SIZE);
+	return (tmp);
 }
 
 void	erase_buddies(t_alloc *alc, void *bl, void *bud)
@@ -36,7 +50,7 @@ void	erase_buddies(t_alloc *alc, void *bl, void *bud)
 	int		bl_ad;
 	int		bud_ad;
 
-	ind = power_of_two_ind(get_block_size(bl));
+	ind = power_of_two_ind(get_block_size(alc, bl));
 	s = find_seq_start(alc, ind);
 	len = power_of_two(alc->max - ind);
 	i = 0;
@@ -62,12 +76,12 @@ int		merge_bud(t_alloc *alc, void *bl)
 	t_head	*bh;
 	int		size;
 
-	size = get_block_size(bl);
+	size = get_block_size(alc, bl);
 	if ((size_t)size == power_of_two(alc->max))
 		return (0);
 	bud = find_buddy(alc, bl);
 	bh = (t_head*)bud;
-	if (bh && bh->sym == SYM && size == get_block_size(bud) && bh->free == 1)
+	if (bh && bh->sym == SYM && size == get_block_size(alc, bud) && bh->free == 1)
 	{
 		erase_buddies(alc, bl, bud);
 		if (bud < bl)
@@ -76,7 +90,7 @@ int		merge_bud(t_alloc *alc, void *bl)
 		write_header(alc, bl, 1, 2 * size);
 		if (alc->left < 2 * size)
 			alc->left = 2 * size;
-		print_zone(alc, "free", NULL);
+//		print_zone(alc, "free", NULL);
 		merge_bud(alc, bl);
 	}
 	return (0);
@@ -136,7 +150,7 @@ void	free(void *ptr)
 			throw_error("Error: pointer being freed was not allocated\n");
 			return ;
 		}
-		print_header(alc);
+//		print_header(alc);
 		bl = ptr - HEAD_SIZE;
 		h = (t_head *)bl;
 		if (h->sym != SYM || h->free != 0)
@@ -145,7 +159,7 @@ void	free(void *ptr)
 		{
 			h->free = 1;
 			merge_bud(alc, bl);
-			print_zone(alc, "free", ptr);
+//			print_zone(alc, "free", ptr);
 		}
 	}
 }

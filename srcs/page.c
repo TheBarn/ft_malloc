@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/14 11:46:16 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/18 15:09:36 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/24 17:51:39 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,7 @@ void		double_dib_size(void)
 	t_dib	*new_dib;
 
 	size = getpagesize() * g_dib->size * 2;
-	pg = mmap(NULL, size, PROT_READ | PROT_WRITE, \
-			MAP_ANON | MAP_PRIVATE, -1, 0);
-	if (!pg)
-		throw_error("Error: mmap allocation: no space found\n");
+	pg = ft_mmap(size);
 	new_dib = (t_dib *)pg;
 	offset = (int)sizeof(t_dib);
 	left = size - offset;
@@ -58,10 +55,7 @@ void		ini_dib(void)
 
 	if (!g_dib)
 	{
-		pg = mmap(NULL, getpagesize(), PROT_READ | PROT_WRITE, \
-				  MAP_ANON | MAP_PRIVATE, -1, 0);
-		if (!pg)
-			throw_error("Error: mmap allocation: no space found\n");
+		pg = ft_mmap(getpagesize());
 		dib = (t_dib *)pg;
 		offset = (int)sizeof(t_dib);
 		left = getpagesize() - offset;
@@ -72,7 +66,8 @@ void		ini_dib(void)
 		dib->small_nb = 0;
 		dib->big_nb = 0;
 		dib->size = 1;
+		dib->nb_pg = 1;
 		g_dib = dib;
-		print_header(NULL);
+//		print_header(NULL);
 	}
 }

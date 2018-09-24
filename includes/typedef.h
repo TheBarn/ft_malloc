@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/17 13:24:26 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/19 14:22:35 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/24 18:10:06 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ typedef struct		s_alloc
 	int			min;
 	int			max;
 	int			left;
+	int			size;
 }					t_alloc;
 
 typedef struct		s_head
@@ -38,6 +39,7 @@ typedef struct		s_dib
 	void			**big_alc;
 	int				big_nb;
 	int				size;
+	int				nb_pg;
 }					t_dib;
 
 #endif

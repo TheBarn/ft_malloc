@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 16:34:10 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/20 15:46:32 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/24 16:50:42 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,17 +64,14 @@ size_t	power_of_two(int pow)
 
 int		power_of_two_ind(int num)
 {
+	int		max;
 	int		i;
 
-	if (num > INT_MAX)
-		return (0);
-	i = 0;
-	while (num > 1 && num % 2 == 0)
-	{
-		num = num / 2;
-		i++;
-	}
-	return (i);
+	i = 30;
+	max = power_of_two(i);
+	while (max >= num)
+		max = power_of_two(i--);
+	return (i + 1);
 }
 
 size_t	sum_power_of_two(int start, int end)

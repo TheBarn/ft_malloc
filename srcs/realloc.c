@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/13 14:48:26 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/24 11:43:06 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/24 16:09:49 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	grow_block(t_alloc *alc, void *bl, size_t size)
 	t_head		*bh;
 	int			bl_size;
 
-	bl_size = get_block_size(bl);
+	bl_size = get_block_size(alc, bl);
 	while ((size_t)(bl_size - HEAD_SIZE) < size)
 	{
 		bud = find_buddy(alc, bl);
@@ -28,7 +28,7 @@ void	grow_block(t_alloc *alc, void *bl, size_t size)
 		erase_buddies(alc, bl, bud);
 		bh->sym = 0;
 		write_header(alc, bl, 0, bl_size * 2 - HEAD_SIZE);
-		print_zone(alc, "realloc", &size);
+//		print_zone(alc, "realloc", &size);
 	}
 	write_header(alc, bl, 0, size);
 }
@@ -39,14 +39,14 @@ char	is_enough_space(t_alloc *alc, void *bl, size_t size)
 	t_head	*bh;
 	size_t	mock_size;
 
-	mock_size = get_block_size(bl);
+	mock_size = get_block_size(alc, bl);
 	while (mock_size <= power_of_two(alc->max) / 2)
 	{
 		bud = find_buddy(alc, bl);
 		if (bud < bl)
 			return (0);
 		bh = (t_head *)bud;
-		if (bh->free != 1 || (size_t)get_block_size(bud) != mock_size)
+		if (bh->free != 1 || (size_t)get_block_size(alc, bud) != mock_size)
 			return (0);
 		if (mock_size * 2 - HEAD_SIZE >= size)
 			break ;
@@ -62,7 +62,7 @@ void	*realloc_block(void *src, size_t size, t_alloc *alc, void *bl)
 	int		bl_size;
 	void	*ptr;
 
-	bl_size = get_block_size(bl);
+	bl_size = get_block_size(alc, bl);
 	if (size <= (size_t)(bl_size - HEAD_SIZE))
 		return (src);
 	if (alc == src || !is_enough_space(alc, bl, size))

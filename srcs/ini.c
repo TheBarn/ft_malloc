@@ -6,11 +6,13 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/12 15:58:31 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/24 11:45:00 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/24 17:55:14 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
+
+extern	t_dib	*g_dib;
 
 int		find_seq_start(t_alloc *alc, int ind)
 {
@@ -56,26 +58,34 @@ int		write_header(t_alloc *alc, void *bl, char fr, int size)
 	ft_putnbr((int)fr);
 	ft_putchar(' ');
 	ft_putnbr(size);
-	ft_putchar('\n');
 */
-	bl_size = sup_power_of_two(size + HEAD_SIZE);
 	((t_head *)bl)->sym = SYM;
 	((t_head *)bl)->free = fr;
 	((t_head *)bl)->size = size;
 	ad = get_ad(alc, bl);
+	bl_size = get_block_size(alc, bl);
 	ind = write_header_in_table(alc, ad, bl_size);
 	return (ind);
 }
 
-void	*get_new_zone(int zn_size)
+void	*ft_mmap(size_t size)
 {
-	void	*zn;
+	void	*ptr;
+	int		nb_pg;
 
-	zn = mmap(NULL, zn_size, PROT_READ | PROT_WRITE, \
-								MAP_ANON | MAP_PRIVATE, -1, 0);
-	if (!zn)
+	nb_pg = (size + (size_t)getpagesize() - 1) / (size_t)getpagesize();
+	if (g_dib)
+		g_dib->nb_pg += nb_pg;
+	ft_putstr("MMAP size ");
+	ft_put_size_t(size);
+	ft_putstr(" page ");
+	ft_put_size_t(nb_pg);
+	ft_putchar('\n');
+	ptr = mmap(NULL, size, PROT_READ | PROT_WRITE, \
+			   MAP_ANON | MAP_PRIVATE, -1, 0);
+	if (!ptr)
 		throw_error("Error: mmap allocation: no space found\n");
-	return (zn);
+	return (ptr);
 }
 
 int		*make_table(t_alloc *alc)
@@ -86,13 +96,7 @@ int		*make_table(t_alloc *alc)
 
 	nb = sum_power_of_two(0, alc->max - alc->min);
 	size = nb * (int)sizeof(int);
-	table = (int *)mmap(NULL, size, PROT_READ | PROT_WRITE,				\
-										MAP_ANON | MAP_PRIVATE, -1, 0);
-	if (!table)
-	{
-		throw_error("Error: mmap allocation: no space found\n");
-		return (NULL);
-	}
+	table = ft_mmap(size);
 //TEST if zero filled
 //	memset(table, 0, size);
 	return (table);
@@ -103,27 +107,20 @@ t_alloc	*make_alloc(int min, int max)
 {
 	t_alloc	*alc;
 	void	*zn;
-	int		zn_size;
 
-	alc = (t_alloc *)mmap(NULL, sizeof(t_alloc), PROT_READ | PROT_WRITE, \
-											MAP_ANON | MAP_PRIVATE, -1, 0);
-	if (!alc)
-	{
-		throw_error("Error: mmap allocation: no space found\n");
-		return (NULL);
-	}
+	//put in dib !!
+	alc = ft_mmap(sizeof(t_alloc));
 	alc->min = min;
 	alc->max = max;
-	//TODO multiple of getpagesize()
-	zn_size = power_of_two(max);
-	alc->left = zn_size - HEAD_SIZE;
-	zn = get_new_zone(zn_size);
+	alc->size = getpagesize() * (power_of_two(max - power_of_two_ind(getpagesize())) + 1);
+	alc->left = alc->size - HEAD_SIZE;
+	zn = ft_mmap(alc->size);
 	if (!zn)
 		return (NULL);
 	alc->zn = zn;
 	alc->table = make_table(alc);
 	if (!alc->table)
 		return (NULL);
-	write_header(alc, alc->zn, 1, zn_size - HEAD_SIZE);
+	write_header(alc, alc->zn, 1, alc->size - HEAD_SIZE);
 	return (alc);
 }

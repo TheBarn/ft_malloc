@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 09:07:14 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/24 12:51:19 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/24 18:10:18 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,11 +86,7 @@ int		find_block_index(t_alloc *alc, int fit)
 	if (ind == -1)
 	{
 		alc->left = power_of_two(fit - 1);
-/*		ft_putstr("HEY");
-		show_dib_state();
-		show_zone_state(alc);
-		show_table_state(alc);
-*/
+//		ft_putstr("HEY");
 		return (-1);
 	}
 	return (ind);
@@ -103,7 +99,7 @@ void	*find_buddy(t_alloc *alc, void *bl)
 	int			bl_ad;
 	int			bud_ad;
 
-	bl_size = get_block_size(bl);
+	bl_size = get_block_size(alc, bl);
 	bl_ad = get_ad(alc, bl);
 	bud_ad = bl_ad ^ bl_size;
 	bud = get_block(alc, bud_ad);
@@ -118,8 +114,8 @@ void	*split_block(t_alloc *alc, int ind, int size)
 
 	ad = alc->table[ind];
 	bl = get_block(alc, ad);
-	bl_size = get_block_size(bl);
-	if (sup_power_of_two(size + HEAD_SIZE) == bl_size || (size_t)bl_size <= power_of_two(alc->min))
+	bl_size = get_block_size(alc, bl);
+	if (bl_size / 2 < (int)power_of_two(alc->min) || (bl_size >= size + HEAD_SIZE && (bl_size / 2) < size + HEAD_SIZE))
 	{
 		((t_head *)bl)->free = 0;
 		((t_head *)bl)->size = size;
@@ -128,7 +124,7 @@ void	*split_block(t_alloc *alc, int ind, int size)
 	alc->table[ind] = 0;
 	ind = write_header(alc, bl, 1, bl_size / 2 - HEAD_SIZE);
 	write_header(alc, bl + bl_size / 2, 1, bl_size / 2 - HEAD_SIZE);
-	print_zone(alc, "malloc", NULL);
+//	print_zone(alc, "malloc", NULL);
 	bl = split_block(alc, ind, size);
 	return (bl);
 }
@@ -137,10 +133,7 @@ void	*ft_big_malloc(size_t size)
 {
 	void	*bl;
 
-	bl = mmap(NULL, size + HEAD_SIZE, PROT_READ | PROT_WRITE, \
-				MAP_ANON | MAP_PRIVATE, -1, 0);
-	if (!bl)
-		throw_error("Error: mmap: no space found\n");
+	bl = ft_mmap(size + HEAD_SIZE);
 	if (g_dib->big_nb >= \
 		(getpagesize() - ((int)sizeof(t_dib)) / 3) / (int)sizeof(t_alloc *))
 		double_dib_size();
@@ -149,6 +142,7 @@ void	*ft_big_malloc(size_t size)
 	return (bl + HEAD_SIZE);
 }
 
+//TODO rationalize mmap 
 //TODO  munmap
 void	*malloc(size_t size)
 {
@@ -169,9 +163,10 @@ void	*malloc(size_t size)
 		fit = find_fit(alc, size);
 		ind = find_block_index(alc, fit);
 	}
-	print_zone(alc, "malloc", &size);
+//	print_zone(alc, "malloc", &size);
 	bl = split_block(alc, ind, (int)size);
-	print_zone(alc, "malloc", &size);
+//	print_zone(alc, "malloc", &size);
 	ft_putstr("\n");
+	show_dib_state();
 	return (bl + HEAD_SIZE);
 }

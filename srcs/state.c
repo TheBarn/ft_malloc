@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/24 10:28:21 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/24 12:29:29 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/24 18:10:20 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,9 @@ void		show_dib_state(void)
 	ft_putchar('\n');
 	ft_putstr("DIB SIZE: ");
 	ft_putnbr(g_dib->size);
-	ft_putstr("\n\n");
+	ft_putstr("\nNB_PG: ");
+	ft_putnbr(g_dib->nb_pg);
+	ft_putchar('\n');
 }
 
 int			get_allocated_mem_size(t_alloc *alc)
@@ -66,7 +68,7 @@ int			get_allocated_mem_size(t_alloc *alc)
 		h = (t_head *)bl;
 		if (h->sym != SYM)
 			throw_error("not a memory block\n");
-		bl_size = get_block_size(bl);
+		bl_size = get_block_size(alc, bl);
 		bl = bl + bl_size;
 		i += bl_size;
 		if (h->free == 0)
@@ -91,7 +93,7 @@ int			get_smallest_block_size(t_alloc *alc)
 	while (i < len)
 	{
 		h = (t_head *)bl;
-		bl_size = get_block_size(bl);
+		bl_size = get_block_size(alc, bl);
 		bl = bl + bl_size;
 		i += bl_size;
 		if (h->free == 1)
@@ -149,6 +151,8 @@ void	show_table_state(t_alloc *alc)
 			if (ad)
 			{
 				ft_putchar(' ');
+				if (((t_head*)(get_block(alc, ad)))->free == 1)
+					ft_putchar(SYM);
 				ft_putnbr(ad);
 			}
 			i++;
