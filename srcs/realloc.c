@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/13 14:48:26 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/20 18:02:21 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/24 11:43:06 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	grow_block(t_alloc *alc, void *bl, size_t size)
 		bh = (t_head *)bud;
 		erase_buddies(alc, bl, bud);
 		bh->sym = 0;
-		write_header(alc, bl, 0, bl_size * 2);
+		write_header(alc, bl, 0, bl_size * 2 - HEAD_SIZE);
 		print_zone(alc, "realloc", &size);
 	}
 	write_header(alc, bl, 0, size);

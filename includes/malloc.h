@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 09:07:48 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/20 17:56:50 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/24 10:47:11 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 # define MALLOC_H
 
 # define TINY_MIN 4
-# define TINY_MAX 15
-# define SMALL_MIN 9
+# define TINY_MAX 21
+# define SMALL_MIN 15
 # define SMALL_MAX 30
 # define HEAD_SIZE ((int)sizeof(t_head))
 # define SYM '*'
@@ -58,6 +58,8 @@ void	throw_error(char *msg);
 void	show_alloc_mem();
 void	ft_putptr(void *ptr);
 int		get_ad(t_alloc *alc, void *bl);
+void	show_dib_state(void);
+void	show_zone_state(t_alloc *alc);
 void	*get_block(t_alloc *alc, int ad);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/13 09:41:40 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/20 18:01:56 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/24 11:24:23 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int		get_block_size(void *bl)
 
 	h = (t_head *)bl;
 	size = h->size;
-	bl_size = sup_power_of_two(size);
+	bl_size = sup_power_of_two(size + HEAD_SIZE);
 	return (bl_size);
 }
 

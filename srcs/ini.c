@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/12 15:58:31 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/20 17:57:07 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/24 11:45:00 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,19 @@ int		write_header(t_alloc *alc, void *bl, char fr, int size)
 	int		ad;
 	int		bl_size;
 
-	bl_size = sup_power_of_two(size);
+/*
+	ft_putstr("\nWRITE ");
+	ft_putchar(' ');
+	ft_putptr((void *)alc);
+	ft_putchar(' ');
+	ft_putptr(bl);
+	ft_putchar(' ');
+	ft_putnbr((int)fr);
+	ft_putchar(' ');
+	ft_putnbr(size);
+	ft_putchar('\n');
+*/
+	bl_size = sup_power_of_two(size + HEAD_SIZE);
 	((t_head *)bl)->sym = SYM;
 	((t_head *)bl)->free = fr;
 	((t_head *)bl)->size = size;
@@ -112,6 +124,6 @@ t_alloc	*make_alloc(int min, int max)
 	alc->table = make_table(alc);
 	if (!alc->table)
 		return (NULL);
-	write_header(alc, alc->zn, 1, zn_size);
+	write_header(alc, alc->zn, 1, zn_size - HEAD_SIZE);
 	return (alc);
 }
