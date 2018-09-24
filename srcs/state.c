@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/24 10:28:21 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/24 11:44:09 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/24 12:29:29 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,31 @@ int			get_allocated_mem_size(t_alloc *alc)
 	return (alc_mem_size);
 }
 
+int			get_smallest_block_size(t_alloc *alc)
+{
+	int		i;
+	int		len;
+	void	*bl;
+	int		bl_size;
+	t_head	*h;
+	int		min_size;
+
+	i = 0;
+	len = power_of_two(alc->max);
+	min_size = 0;
+	bl = alc->zn;
+	while (i < len)
+	{
+		h = (t_head *)bl;
+		bl_size = get_block_size(bl);
+		bl = bl + bl_size;
+		i += bl_size;
+		if (h->free == 1)
+			min_size = ft_max(bl_size, min_size);
+	}
+	return (min_size);
+}
+
 void		show_zone_state(t_alloc *alc)
 {
 	int		alc_mem_size;
@@ -94,5 +119,41 @@ void		show_zone_state(t_alloc *alc)
 	ft_putnbr(alc_mem_size);
 	ft_putstr("\nFREE MEMORY: ");
 	ft_putnbr(power_of_two(alc->max) - alc_mem_size);
+	ft_putstr("\nBLOCK LEFT: ");
+	ft_putnbr(get_smallest_block_size(alc));
 	ft_putchar('\n');
+}
+
+void	show_table_state(t_alloc *alc)
+{
+	int		s;
+	int		len;
+	int		ind;
+	int		i;
+	int		ad;
+
+	ft_putstr("\nTABLE STATE FOR: ");
+	ft_putptr((void *)alc);
+	ft_putchar('\n');
+	ind = alc->max;
+	while (ind >= alc->min)
+	{
+		s = sum_power_of_two(0, alc->max - ind - 1);
+		len = power_of_two(alc->max - ind);
+		ft_putnbr(ind);
+		ft_putstr(" :");
+		i = 0;
+		while (i < len)
+		{
+			ad = alc->table[s + i];
+			if (ad)
+			{
+				ft_putchar(' ');
+				ft_putnbr(ad);
+			}
+			i++;
+		}
+		ft_putchar('\n');
+		ind--;
+	}
 }

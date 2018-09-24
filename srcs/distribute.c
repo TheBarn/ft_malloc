@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/14 09:40:07 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/20 17:58:22 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/24 12:02:27 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ t_alloc		*get_zone(size_t size, char tiny)
 		while (i < nb)
 		{
 			alc = ar[i];
-			if ((size_t)alc->left >= size)
+			if ((size_t)alc->left >= size + HEAD_SIZE)
 				return (alc);
 			i++;
 		}

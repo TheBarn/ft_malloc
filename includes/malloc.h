@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 09:07:48 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/24 10:47:11 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/24 12:27:53 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,5 +61,7 @@ int		get_ad(t_alloc *alc, void *bl);
 void	show_dib_state(void);
 void	show_zone_state(t_alloc *alc);
 void	*get_block(t_alloc *alc, int ad);
+int		ft_max(int a, int b);
+void	show_table_state(t_alloc *alc);
 
 #endif

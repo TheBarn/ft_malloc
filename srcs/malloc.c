@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 09:07:14 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/24 11:45:27 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/24 12:51:19 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,11 +86,11 @@ int		find_block_index(t_alloc *alc, int fit)
 	if (ind == -1)
 	{
 		alc->left = power_of_two(fit - 1);
-		ft_putstr("HEY");
+/*		ft_putstr("HEY");
 		show_dib_state();
 		show_zone_state(alc);
-		alc = NULL;
-		alc->left = 0; // DEBUG + make show_dib_state
+		show_table_state(alc);
+*/
 		return (-1);
 	}
 	return (ind);
@@ -121,8 +121,8 @@ void	*split_block(t_alloc *alc, int ind, int size)
 	bl_size = get_block_size(bl);
 	if (sup_power_of_two(size + HEAD_SIZE) == bl_size || (size_t)bl_size <= power_of_two(alc->min))
 	{
-		write_header(alc, bl, 0, size);
 		((t_head *)bl)->free = 0;
+		((t_head *)bl)->size = size;
 		return (bl);
 	}
 	alc->table[ind] = 0;
