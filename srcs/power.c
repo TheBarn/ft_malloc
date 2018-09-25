@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 16:34:10 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/24 16:50:42 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/25 11:28:41 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,8 @@ int		sup_power_of_two(int nb)
 	return (p);
 }
 
-size_t	power_of_two(int pow)
+//return int
+int		power_of_two(int pow)
 {
 	int		i;
 	size_t	num;

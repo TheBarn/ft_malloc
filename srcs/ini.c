@@ -6,14 +6,14 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/12 15:58:31 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/24 17:55:14 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/25 11:14:05 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
 
 extern	t_dib	*g_dib;
-
+/*
 int		find_seq_start(t_alloc *alc, int ind)
 {
 	int		s;
@@ -41,12 +41,12 @@ int		write_header_in_table(t_alloc *alc, int ad, int bl_size)
 		alc->table[s + i] = -1;
 	return (s + i);
 }
-
-int		write_header(t_alloc *alc, void *bl, char fr, int size)
+*/
+void	write_header(/*t_alloc *alc, */void *bl, char fr, int mem_size)
 {
-	int		ind;
-	int		ad;
-	int		bl_size;
+//	int		ind;
+//	int		ad;
+//	int		bl_size;
 
 /*
 	ft_putstr("\nWRITE ");
@@ -61,11 +61,11 @@ int		write_header(t_alloc *alc, void *bl, char fr, int size)
 */
 	((t_head *)bl)->sym = SYM;
 	((t_head *)bl)->free = fr;
-	((t_head *)bl)->size = size;
-	ad = get_ad(alc, bl);
-	bl_size = get_block_size(alc, bl);
-	ind = write_header_in_table(alc, ad, bl_size);
-	return (ind);
+	((t_head *)bl)->size = mem_size;
+//	ad = get_ad(alc, bl);
+//	bl_size = get_block_size(alc, bl);
+//	ind = write_header_in_table(alc, ad, bl_size);
+//	return (ind);
 }
 
 void	*ft_mmap(size_t size)
@@ -87,7 +87,7 @@ void	*ft_mmap(size_t size)
 		throw_error("Error: mmap allocation: no space found\n");
 	return (ptr);
 }
-
+/*
 int		*make_table(t_alloc *alc)
 {
 	size_t	nb;
@@ -101,7 +101,7 @@ int		*make_table(t_alloc *alc)
 //	memset(table, 0, size);
 	return (table);
 }
-
+*/
 //TODO norme on libft
 t_alloc	*make_alloc(int min, int max)
 {
@@ -110,17 +110,17 @@ t_alloc	*make_alloc(int min, int max)
 
 	//put in dib !!
 	alc = ft_mmap(sizeof(t_alloc));
-	alc->min = min;
-	alc->max = max;
+	alc->min = min; // compute
+	alc->max = max; //remove ?
 	alc->size = getpagesize() * (power_of_two(max - power_of_two_ind(getpagesize())) + 1);
 	alc->left = alc->size - HEAD_SIZE;
 	zn = ft_mmap(alc->size);
 	if (!zn)
 		return (NULL);
 	alc->zn = zn;
-	alc->table = make_table(alc);
+/*	alc->table = make_table(alc);
 	if (!alc->table)
-		return (NULL);
+	return (NULL);*/
 	write_header(alc, alc->zn, 1, alc->size - HEAD_SIZE);
 	return (alc);
 }

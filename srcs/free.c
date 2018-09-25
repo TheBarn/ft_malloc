@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/13 09:41:40 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/24 16:09:30 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/25 11:40:38 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,7 @@ void	erase_buddies(t_alloc *alc, void *bl, void *bud)
 	}
 }
 
+//look left then look right becarful with the size in the header, return void
 int		merge_bud(t_alloc *alc, void *bl)
 {
 	void	*bud;
@@ -96,6 +97,7 @@ int		merge_bud(t_alloc *alc, void *bl)
 	return (0);
 }
 
+//check if it is correct
 t_alloc	*search_big_zone(void *ptr)
 {
 	int		i;
@@ -116,9 +118,11 @@ t_alloc	*find_zone(void *ptr)
 	int		i;
 
 	i = 0;
+	//make only one while
 	while (i < g_dib->tiny_nb)
 	{
 		alc = (g_dib->tiny_alc)[i];
+		//change with alc->size
 		if (ptr >= alc->zn && ptr < alc->zn + power_of_two(alc->max))
 			return (alc);
 		i++;
@@ -126,6 +130,7 @@ t_alloc	*find_zone(void *ptr)
 	i = 0;
 	while (i < g_dib->small_nb)
 	{
+		//change with alc->size
 		alc = (g_dib->small_alc)[i];
 		if (ptr >= alc->zn && ptr < alc->zn + power_of_two(alc->max))
 			return (alc);
@@ -145,6 +150,7 @@ void	free(void *ptr)
 	{
 		ini_dib();
 		alc = find_zone(ptr);
+		//do nothing if it is the case, maybe put a DEBUG macro
 		if (!alc)
 		{
 			throw_error("Error: pointer being freed was not allocated\n");
@@ -153,8 +159,10 @@ void	free(void *ptr)
 //		print_header(alc);
 		bl = ptr - HEAD_SIZE;
 		h = (t_head *)bl;
+		//same for DEBUG
 		if (h->sym != SYM || h->free != 0)
 			throw_error("Error: pointer being freed was not allocated\n");
+		//should be alc->zn, I don't understand this condition
 		else if (alc != ptr)
 		{
 			h->free = 1;

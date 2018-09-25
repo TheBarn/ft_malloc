@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 09:07:14 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/24 18:10:18 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/25 11:58:39 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 t_dib *g_dib = NULL;
 
+/*
+//fit should be with real block size
 int		find_fit(t_alloc *alc, size_t size)
 {
 	int		fit;
@@ -65,9 +67,10 @@ int		find_in_seq(t_alloc *alc, int s, int len)
 		return (s + i);
 	else
 		return (-1);
-}
+}*/
 
-int		find_block_index(t_alloc *alc, int fit)
+//run through alc twice and return bl (alc, size)
+int		find_block(t_alloc *alc, int size)
 {
 	int		ind;
 	int		s;
@@ -92,6 +95,7 @@ int		find_block_index(t_alloc *alc, int fit)
 	return (ind);
 }
 
+/*
 void	*find_buddy(t_alloc *alc, void *bl)
 {
 	void		*bud;
@@ -105,7 +109,8 @@ void	*find_buddy(t_alloc *alc, void *bl)
 	bud = get_block(alc, bud_ad);
 	return (bud);
 }
-
+*/
+//(alc, bl, size) returns nothing, only splits and write headers
 void	*split_block(t_alloc *alc, int ind, int size)
 {
 	void	*bl;
@@ -129,6 +134,7 @@ void	*split_block(t_alloc *alc, int ind, int size)
 	return (bl);
 }
 
+//to verify, it looks terrible
 void	*ft_big_malloc(size_t size)
 {
 	void	*bl;
@@ -147,26 +153,23 @@ void	*ft_big_malloc(size_t size)
 void	*malloc(size_t size)
 {
 	t_alloc *alc;
-	int		fit;
-	int		ind;
 	void	*bl;
 
 	ft_putstr("malloc: ");
 	ft_put_size_t(size);
 	ini_dib();
-	if (size > power_of_two(SMALL_MAX) / 100 - HEAD_SIZE)
-		bl = ft_big_malloc(size);
-	ind = -1;
-	while (ind < 0)
+	if (size > power_of_two(SMALL_MAX) / 100 - HEAD_SIZE) //replace with SMALL_LIM
 	{
-		alc = get_alloc_zone(size);
-		fit = find_fit(alc, size);
-		ind = find_block_index(alc, fit);
+		bl = ft_big_malloc(size);
+		return (bl);
 	}
+	alc = get_alloc_zone(size);
+	find_block(alc, (int)size);
 //	print_zone(alc, "malloc", &size);
+	//split block returns nothing, it does only splits
 	bl = split_block(alc, ind, (int)size);
 //	print_zone(alc, "malloc", &size);
 	ft_putstr("\n");
-	show_dib_state();
+//	show_dib_state();
 	return (bl + HEAD_SIZE);
 }
