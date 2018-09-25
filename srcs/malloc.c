@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 09:07:14 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/25 11:58:39 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/25 12:33:53 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,30 @@ int		find_in_seq(t_alloc *alc, int s, int len)
 }*/
 
 //run through alc twice and return bl (alc, size)
+void	*find_block(t_alloc *alc, int mem_size)
+{
+	void	*bl;
+	t_head	*h;
+	int		bl_size;
+	int		i;
+
+	bl = alc->zn;
+	i = 0;
+	while (i < alc->size)
+	{
+		h = (t_head *)bl;
+		if (h->sym != SYM)
+			throw_error('not a block');
+		if (h->free == 1 && h->size <= mem_size)
+			return (bl);
+		bl_size = get_block_size(alc, bl);
+		i += bl_size;
+		bl += bl_size;
+	}
+	throw_error('no free block');
+	return (NULL);
+}
+/*
 int		find_block(t_alloc *alc, int size)
 {
 	int		ind;
@@ -94,7 +118,7 @@ int		find_block(t_alloc *alc, int size)
 	}
 	return (ind);
 }
-
+*/
 /*
 void	*find_buddy(t_alloc *alc, void *bl)
 {
@@ -110,6 +134,28 @@ void	*find_buddy(t_alloc *alc, void *bl)
 	return (bud);
 }
 */
+
+void	split_block(t_alloc *alc, void *bl, int mem_size)
+{
+	int		bl_size;
+	//available mem size in half block
+	int		half_av_size;
+	t_head	*h;
+
+	h = (t_head *)bl;
+	bl_size = get_block_size(alc, bl);
+	half_av_size = (bl_size / 2) - HEAD_SIZE;
+	//put TINY_MIN_BL_SIZE in alc moron
+	if (bl_size / 2 < TINY_MIN_BL_SIZE || (h->size >= mem_size && half_av_size < mem_size))
+		write_header(bl, 0, mem_size);
+	else
+	{
+		write_header(bl, 1, half_av_size);
+		write_header(bl + (bl_size / 2), 1, half_av_size);
+		split_block(alc, bl, mem_size);
+	}
+}
+
 //(alc, bl, size) returns nothing, only splits and write headers
 void	*split_block(t_alloc *alc, int ind, int size)
 {
@@ -163,11 +209,12 @@ void	*malloc(size_t size)
 		bl = ft_big_malloc(size);
 		return (bl);
 	}
+	//verify in get alloc that the zone has enough space
 	alc = get_alloc_zone(size);
 	find_block(alc, (int)size);
 //	print_zone(alc, "malloc", &size);
 	//split block returns nothing, it does only splits
-	bl = split_block(alc, ind, (int)size);
+	split_block(alc, ind, (int)size);
 //	print_zone(alc, "malloc", &size);
 	ft_putstr("\n");
 //	show_dib_state();
