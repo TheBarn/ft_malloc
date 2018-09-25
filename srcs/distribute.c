@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/14 09:40:07 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/25 11:15:08 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/25 18:33:34 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,40 +14,72 @@
 
 extern t_dib	*g_dib;
 
-void		add_to_dib(t_alloc *alc, char tiny)
+int		ft_min(int a, int b)
 {
-	int			nb;
-	t_alloc		**ar;
+	if (a < b)
+		return (a);
+	return (b);
+}
 
-	nb = tiny ? g_dib->tiny_nb : g_dib->small_nb;
-	ar = tiny ? g_dib->tiny_alc : g_dib->small_alc;
-	if (nb > \
-		(getpagesize() - ((int)sizeof(t_dib)) / 3) / (int)sizeof(t_alloc *))
-		double_dib_size();
-	ar[nb] = alc;
-	if (tiny)
-		g_dib->tiny_nb += 1;
-	else
-		g_dib->small_nb += 1;
+void	ini_alloc(t_alloc *alc, char tiny)
+{
+	int		multi;
+
+	multi = tiny ? TINY_PG_MULTI : SMALL_PG_MULTI;
+	alc->size = getpagesize() * multi;
+	alc->left = alc->size - HEAD_SIZE;
+	alc->zn = ft_mmap(alc->size);
+	write_header(alc->zn, 1, alc->size - HEAD_SIZE);
 }
 
 t_alloc		*make_new_zone(char tiny)
 {
-	t_alloc		*alc;
-	int			min;
-	int			max;
+	int		nb;
+	t_alloc	*ar;
+	t_alloc	*alc;
 
-	min = tiny ? TINY_MIN : SMALL_MIN;
-	max = tiny ? TINY_MAX : SMALL_MAX;
-	alc = make_alloc(min, max);
-	add_to_dib(alc, tiny);
-//	print_header(alc);
+	nb = tiny ? g_dib->tiny_nb : g_dib->small_nb;
+	if (!is_enough_dib_left(nb))
+		double_dib_size();
+	ar = tiny ? g_dib->tiny_alc : g_dib->small_alc;
+	alc = (t_alloc *)(&(ar[nb]));
+	if (tiny)
+		g_dib->tiny_nb += 1;
+	else
+		g_dib->small_nb += 1;
+	ini_alloc(alc, tiny);
 	return (alc);
 }
 
-t_alloc		*get_zone(size_t size, char tiny)
+char		is_enough_mem_left(t_alloc *alc, int mem_size)
 {
-	t_alloc		**ar;
+	int		i;
+	void	*bl;
+	t_head	*h;
+	int		bl_size;
+
+	if (alc->left < mem_size)
+		return (0);
+	bl = alc->zn;
+	i = 0;
+	while (i < alc->size)
+	{
+		h = (t_head *)bl;
+		if (h->sym != SYM)
+			throw_error("ho ho\n");
+		if (h->free == 1 && h->size >= mem_size)
+			return (1);
+		bl_size = get_block_size(alc, bl);
+		i += bl_size;
+		bl += bl_size;
+	}
+	alc->left = ft_min(alc->left, mem_size);
+	return (0);
+}
+
+t_alloc		*get_zone(int size, char tiny)
+{
+	t_alloc		*ar;
 	t_alloc		*alc;
 	int			i;
 	int			nb;
@@ -64,8 +96,8 @@ t_alloc		*get_zone(size_t size, char tiny)
 		i = 0;
 		while (i < nb)
 		{
-			alc = ar[i];
-			if ((size_t)alc->left >= size + HEAD_SIZE)
+			alc = &(ar[i]);
+			if (is_enough_mem_left(alc, size))
 				return (alc);
 			i++;
 		}
@@ -74,17 +106,16 @@ t_alloc		*get_zone(size_t size, char tiny)
 	}
 }
 
-t_alloc		*get_alloc_zone(size_t size)
+t_alloc		*get_alloc_zone(int size)
 {
-	if (size <= 0 || size > power_of_two(SMALL_MAX) / 100 - HEAD_SIZE) //replace with SMALL_LIM
+	if (size <= 0 || size > SMALL_LIM)
 		return (NULL);
-	if (size <= power_of_two(TINY_MAX) / 100 - HEAD_SIZE) //replace with TINY_LIM
+	if (size <= TINY_LIM)
 	{
 		return (get_zone(size, 1));
 	}
-	if (size <= power_of_two(SMALL_MAX) / 100 - HEAD_SIZE) // replace with SMALL_LIM
+	else
 	{
 		return (get_zone(size, 0));
 	}
-	return (NULL);
 }
