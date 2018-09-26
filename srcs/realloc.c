@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/13 14:48:26 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/26 17:03:23 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/26 17:30:18 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ char	is_enough_padding_space(t_alloc *alc, void *bl, int mem_size)
 {
 	int		bl_size;
 	int		mock_size;
+	int		bud_size;
 	void	*bud;
 	t_head	*bh;
 
@@ -60,7 +61,10 @@ char	is_enough_padding_space(t_alloc *alc, void *bl, int mem_size)
 			throw_error("oupsie\n");
 		if (bh->free == 0)
 			return (0);
-		mock_size += get_block_size(alc, bud);
+		bud_size = get_block_size(alc, bud);
+		if (bl_size != bud_size)
+			return (0);
+		mock_size += bud_size;
 		bl = bud;
 	}
 	return (1);

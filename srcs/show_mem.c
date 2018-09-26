@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/18 17:23:07 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/26 15:25:37 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/26 18:04:14 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void	ft_putptr(void *ptr)
 	ft_putptr_req(ad);
 }
 
-void		print_block_mem(void *bl)
+int		print_block_mem(void *bl)
 {
 	t_head	*h;
 
@@ -47,30 +47,32 @@ void		print_block_mem(void *bl)
 	ft_putstr(" : ");
 	ft_putnbr(h->size);
 	ft_putstr(" octets\n");
+	return (h->size);
 }
 
-void		print_alc_mem(t_alloc *alc)
+int		print_alc_mem(t_alloc *alc)
 {
 	void	*bl;
 	t_head	*h;
 	int		bl_size;
 	int		i;
+	int		tot;
 
 	bl = alc->zn;
 	i = 0;
+	tot = 0;
 	while (i < alc->size)
 	{
 		h = (t_head *)bl;
 		if (h->sym != SYM)
 			throw_error("not a block!!\n");
 		if (h->free == 0)
-			print_block_mem(bl);
+			tot += print_block_mem(bl);
 		bl_size = get_block_size(alc, bl);
-		ft_putnbr(bl_size);
-		ft_putchar('\n');
 		i += bl_size;
 		bl += bl_size;
 	}
+	return (tot);
 }
 
 void		print_alc_header(t_alloc *alc)
@@ -133,7 +135,10 @@ t_alloc		*next_alloc(void *pr)
 void	show_alloc_mem()
 {
 	t_alloc		*alc;
+	size_t		tot;
+	size_t		tmp;
 
+	tot = 0;
 	ft_putchar('\n');
 	ft_putptr(g_dib);
 	ft_putchar('\n');
@@ -141,7 +146,17 @@ void	show_alloc_mem()
 	while (alc)
 	{
 		print_alc_header(alc);
-		print_alc_mem(alc);
+		tmp = (size_t)print_alc_mem(alc);
+		tot += tmp;
+		ft_put_size_t(tmp);
+		ft_putchar('\n');
+		ft_put_size_t(tot);
+		ft_putchar('\n');
 		alc = next_alloc((void *)alc);
 	}
+	ft_putstr("Total : ");
+	ft_put_size_t(tot);
+	ft_putstr(" octets for ");
+	ft_putnbr(g_dib->nb_pg);
+	ft_putstr(" pages\n");
 }

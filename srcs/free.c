@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/13 09:41:40 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/26 17:25:33 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/26 17:36:23 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 extern t_dib	*g_dib;
 
+//TODO put static
 int		get_block_size(t_alloc *alc, void *bl)
 {
 	t_head	*h;
@@ -139,11 +140,11 @@ void	free(void *ptr)
 	t_head	*h;
 	t_alloc	*alc;
 
-	ft_putstr("\nfree: ");
-	ft_putptr(ptr);
-	ft_putchar('\n');
 	if (ptr)
 	{
+		ft_putstr("\nfree: ");
+		ft_putptr(ptr);
+		ft_putchar('\n');
 		ini_dib();
 		alc = find_zone(ptr);
 		//do nothing if it is the case, maybe put a DEBUG macro

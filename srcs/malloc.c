@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 09:07:14 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/26 17:25:04 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/26 17:30:58 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ void	*malloc(size_t size)
 	split_block(alc, bl, (int)size);
 //	ft_putchar('f');
 //	print_zone(alc, "malloc", &size);
-	ft_putstr("\nreturn: ");
+	ft_putstr("  return: ");
 	ft_putptr(bl + HEAD_SIZE);
 	ft_putchar('\n');
 //	print_visu(alc);

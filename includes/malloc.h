@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 09:07:48 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/26 17:00:26 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/26 17:39:16 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@
 # include <sys/mman.h>
 # include <stdint.h>
 # include "typedef.h"
-# include <stdlib.h>
 
 int		get_block_size(t_alloc *alc, void *bl);
 //int		sup_power_of_two(int nb);
