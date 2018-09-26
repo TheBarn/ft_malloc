@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/18 17:23:07 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/25 18:34:44 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/26 15:25:37 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,8 @@ void		print_alc_mem(t_alloc *alc)
 		if (h->free == 0)
 			print_block_mem(bl);
 		bl_size = get_block_size(alc, bl);
+		ft_putnbr(bl_size);
+		ft_putchar('\n');
 		i += bl_size;
 		bl += bl_size;
 	}
@@ -132,11 +134,14 @@ void	show_alloc_mem()
 {
 	t_alloc		*alc;
 
+	ft_putchar('\n');
+	ft_putptr(g_dib);
+	ft_putchar('\n');
 	alc = next_alloc(NULL);
 	while (alc)
 	{
 		print_alc_header(alc);
 		print_alc_mem(alc);
-		alc = next_alloc(NULL);
+		alc = next_alloc((void *)alc);
 	}
 }

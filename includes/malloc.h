@@ -6,17 +6,17 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 09:07:48 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/25 18:33:23 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/26 17:00:26 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MALLOC_H
 # define MALLOC_H
 
-# define TINY_LIM 17
+# define TINY_LIM 1200
 # define TINY_PG_MULTI 33
-# define SMALL_LIM 11
-# define SMALL_PG_MULTI 30
+# define SMALL_LIM 10500
+# define SMALL_PG_MULTI 257
 # define HEAD_SIZE ((int)sizeof(t_head))
 # define SYM '*'
 # define TRASH '.'
@@ -30,13 +30,14 @@
 # include <sys/mman.h>
 # include <stdint.h>
 # include "typedef.h"
+# include <stdlib.h>
 
 int		get_block_size(t_alloc *alc, void *bl);
 //int		sup_power_of_two(int nb);
 //size_t	power_of_two(int pow);
 //int		power_of_two_ind(int num);
 //size_t	sum_power_of_two(int start, int end);
-void	write_header(void *bl, char fr, int bl_size);
+void	write_header(void *bl, char fr, char side, int bl_size);
 void	*malloc(size_t size);
 //void	print_zone(t_alloc *alc, char *op, void *arg);
 void	*realloc(void *src, size_t size);
@@ -49,7 +50,7 @@ t_alloc	*find_zone(void *ptr);
 //int		count_digit(int n);
 void	throw_error(char *msg);
 void	show_alloc_mem();
-//void	ft_putptr(void *ptr);
+void	ft_putptr(void *ptr);
 //void	show_dib_state(void);
 //void	show_zone_state(t_alloc *alc);
 //int		ft_max(int a, int b);
@@ -57,5 +58,6 @@ void	show_alloc_mem();
 void	*ft_mmap(size_t size);
 void	split_block(t_alloc *alc, void *bl, int mem_size);
 char	is_enough_dib_left(int nb);
+void	print_visu(t_alloc *alc);
 
 #endif

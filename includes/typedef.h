@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/17 13:24:26 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/25 18:05:51 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/26 16:58:51 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ typedef struct		s_head
 	char			sym;
 	char			free;
 	char			offset;
+	char			side;
 	int				size;
 }					t_head;
 

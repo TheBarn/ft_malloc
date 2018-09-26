@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/13 14:48:26 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/25 15:53:27 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/26 17:03:23 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 extern t_dib	*g_dib;
 
+//TODO verify if the size of the block belongs to the list 
 void	grow_block(t_alloc *alc, void *bl, int mem_size)
 {
 	int		bl_size;
@@ -34,9 +35,9 @@ void	grow_block(t_alloc *alc, void *bl, int mem_size)
 		ft_memset(bl, TRASH, HEAD_SIZE);
 		bl = bud;
 	}
-	write_header(tmp, 1, mock_size);
+	write_header(tmp, 1, 0, mock_size);
 	split_block(alc, tmp, mem_size);
-	write_header(tmp, 0, mem_size);
+	write_header(tmp, 0, 0,mem_size);
 }
 
 char	is_enough_padding_space(t_alloc *alc, void *bl, int mem_size)

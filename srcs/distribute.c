@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/14 09:40:07 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/25 18:33:34 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/26 17:01:14 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	ini_alloc(t_alloc *alc, char tiny)
 	alc->size = getpagesize() * multi;
 	alc->left = alc->size - HEAD_SIZE;
 	alc->zn = ft_mmap(alc->size);
-	write_header(alc->zn, 1, alc->size - HEAD_SIZE);
+	write_header(alc->zn, 1, 0, alc->size - HEAD_SIZE);
 }
 
 t_alloc		*make_new_zone(char tiny)

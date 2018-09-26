@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/14 11:46:16 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/25 18:35:36 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/26 17:25:41 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ void	throw_error(char *msg)
 
 	len = ft_strlen(msg);
 	write(2, msg, len);
+//	exit(0);
 }
 
 void		copy_dib_value(t_dib *new_dib, int size, int offset)
