@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/13 14:48:26 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/26 17:30:18 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/27 11:00:12 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 extern t_dib	*g_dib;
 
-//TODO verify if the size of the block belongs to the list 
 void	grow_block(t_alloc *alc, void *bl, int mem_size)
 {
 	int		bl_size;
@@ -81,12 +80,57 @@ void	*realloc_block(void *src, int size, t_alloc *alc, void *bl)
 	if (!is_enough_padding_space(alc, bl, size))
 	{
 		ptr = malloc(size);
+		if (!ptr)
+			return (NULL);
 		ft_memcpy(ptr, src, bl_size - HEAD_SIZE);
 		free(src);
 		return (ptr);
 	}
 	grow_block(alc, bl, size);
 	return (src);
+}
+
+int		get_page_multi(size_t size)
+{
+	int		multi;
+	int		pg_size;
+
+	multi = 1;
+	pg_size = getpagesize();
+	while ((size_t)(multi * pg_size) < size)
+		multi++;
+	return (multi);
+}
+
+void	*realloc_big(void *src, size_t size)
+{
+	int			i;
+	void		*bl;
+	t_big_head	*h;
+	int			multi;
+	void		*ptr;
+
+	i = 0;
+	while (i < g_dib->big_nb)
+	{
+		bl = (g_dib->big_alc)[i];
+		if (bl && bl + BIG_HEAD_SIZE == src)
+		{
+			h = (t_big_head *)bl;
+			if (size <= h->size)
+				return (src);
+			multi = get_page_multi(h->size + BIG_HEAD_SIZE);
+			if (size + BIG_HEAD_SIZE <= (size_t)(multi * getpagesize()))
+				return (src);
+			ptr = malloc(size);
+			if (!ptr)
+				return (NULL);
+			ft_memcpy(ptr, src, h->size);
+			return (ptr);
+		}
+		i++;
+	}
+	return (NULL);
 }
 
 void	*realloc(void *src, size_t size)
@@ -99,7 +143,9 @@ void	*realloc(void *src, size_t size)
 	if (!src)
 		return (malloc(size));
 	ini_dib();
-	//what happens for big zone?
+	ptr = realloc_big(src, size);
+	if (ptr)
+		return (ptr);
 	alc = find_zone(src);
 	bl = src - HEAD_SIZE;
 	h = (t_head *)bl;

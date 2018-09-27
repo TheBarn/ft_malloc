@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/18 17:23:07 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/26 18:04:14 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/27 09:47:32 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,7 +136,6 @@ void	show_alloc_mem()
 {
 	t_alloc		*alc;
 	size_t		tot;
-	size_t		tmp;
 
 	tot = 0;
 	ft_putchar('\n');
@@ -146,12 +145,7 @@ void	show_alloc_mem()
 	while (alc)
 	{
 		print_alc_header(alc);
-		tmp = (size_t)print_alc_mem(alc);
-		tot += tmp;
-		ft_put_size_t(tmp);
-		ft_putchar('\n');
-		ft_put_size_t(tot);
-		ft_putchar('\n');
+		tot += (size_t)print_alc_mem(alc);
 		alc = next_alloc((void *)alc);
 	}
 	ft_putstr("Total : ");

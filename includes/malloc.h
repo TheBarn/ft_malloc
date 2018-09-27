@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 09:07:48 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/26 17:39:16 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/27 10:05:42 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # define SMALL_LIM 10500
 # define SMALL_PG_MULTI 257
 # define HEAD_SIZE ((int)sizeof(t_head))
+# define BIG_HEAD_SIZE ((int)sizeof(t_big_head))
 # define SYM '*'
 # define TRASH '.'
 # define RED 41

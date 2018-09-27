@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/13 09:41:40 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/26 17:36:23 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/27 10:59:25 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,19 +94,26 @@ void	merge_bud(t_alloc *alc, void *bl)
 	}
 }
 
-//check if it is correct
-t_alloc	*search_big_zone(void *ptr)
+char	free_big(void *ptr)
 {
-	int		i;
+	int			i;
+	void		*bl;
+	t_big_head	*h;
 
 	i = 0;
 	while (i < g_dib->big_nb)
 	{
-		if (ptr == &((g_dib->big_alc)[i]))
-			return ((t_alloc *)ptr);
+		bl = (g_dib->big_alc)[i];
+		if (bl && ptr == bl + BIG_HEAD_SIZE)
+		{
+			h = (t_big_head *)bl;
+			munmap(bl, h->size + BIG_HEAD_SIZE);
+			(g_dib->big_alc)[i] = NULL;
+			return (1);
+		}
 		i++;
 	}
-	return (NULL);
+	return (0);
 }
 
 t_alloc	*find_zone(void *ptr)
@@ -130,7 +137,6 @@ t_alloc	*find_zone(void *ptr)
 			return (alc);
 		i++;
 	}
-//	alc = search_big_zone(ptr);
 	return (NULL);
 }
 
@@ -142,24 +148,18 @@ void	free(void *ptr)
 
 	if (ptr)
 	{
-		ft_putstr("\nfree: ");
-		ft_putptr(ptr);
-		ft_putchar('\n');
 		ini_dib();
+		if (free_big(ptr))
+			return ;
 		alc = find_zone(ptr);
-		//do nothing if it is the case, maybe put a DEBUG macro
-//		print_header(alc);
 		bl = ptr - HEAD_SIZE;
 		h = (t_head *)bl;
-		//same for DEBUG
 		if (!alc || h->sym != SYM || h->free != 0)
 		{
 //			throw_error("Error: pointer being freed was not allocated\n");
 			return ;
 		}
-		//should be alc->zn, I don't understand this condition
 		h->free = 1;
 		merge_bud(alc, bl);
-//		print_zone(alc, "free", ptr);
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/14 09:40:07 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/26 17:01:14 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/27 10:52:57 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int		ft_min(int a, int b)
 	return (b);
 }
 
-void	ini_alloc(t_alloc *alc, char tiny)
+void	*ini_alloc(t_alloc *alc, char tiny)
 {
 	int		multi;
 
@@ -30,6 +30,7 @@ void	ini_alloc(t_alloc *alc, char tiny)
 	alc->left = alc->size - HEAD_SIZE;
 	alc->zn = ft_mmap(alc->size);
 	write_header(alc->zn, 1, 0, alc->size - HEAD_SIZE);
+	return (alc->zn);
 }
 
 t_alloc		*make_new_zone(char tiny)
@@ -47,7 +48,8 @@ t_alloc		*make_new_zone(char tiny)
 		g_dib->tiny_nb += 1;
 	else
 		g_dib->small_nb += 1;
-	ini_alloc(alc, tiny);
+	if (!ini_alloc(alc, tiny))
+		return (NULL);
 	return (alc);
 }
 
@@ -111,11 +113,7 @@ t_alloc		*get_alloc_zone(int size)
 	if (size <= 0 || size > SMALL_LIM)
 		return (NULL);
 	if (size <= TINY_LIM)
-	{
 		return (get_zone(size, 1));
-	}
 	else
-	{
 		return (get_zone(size, 0));
-	}
 }
