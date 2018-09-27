@@ -6,13 +6,11 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 09:07:14 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/27 10:59:10 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/27 14:03:33 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
-
-t_dib *g_dib = NULL;
 
 void	*find_block(t_alloc *alc, int mem_size)
 {
@@ -27,14 +25,13 @@ void	*find_block(t_alloc *alc, int mem_size)
 	{
 		h = (t_head *)bl;
 		if (h->sym != SYM)
-			throw_error("not a block\n");
+			return (NULL);
 		if (h->free == 1 && h->size >= mem_size)
 			return (bl);
 		bl_size = get_block_size(alc, bl);
 		i += bl_size;
 		bl += bl_size;
 	}
-	throw_error("no free block\n");
 	return (NULL);
 }
 
@@ -63,7 +60,7 @@ void	split_block(t_alloc *alc, void *bl, int mem_size)
 
 void	*ft_big_malloc(size_t size)
 {
-	void	*bl;
+	void		*bl;
 	t_big_head	*h;
 
 	bl = ft_mmap(size + HEAD_SIZE);
@@ -78,18 +75,19 @@ void	*ft_big_malloc(size_t size)
 	return (bl + BIG_HEAD_SIZE);
 }
 
-void	*malloc(size_t size)
+void	*ft_malloc(size_t size)
 {
 	t_alloc *alc;
 	void	*bl;
 
-	ini_dib();
 	if (size > SMALL_LIM)
 		return (ft_big_malloc(size));
 	alc = get_alloc_zone((int)size);
 	if (!alc)
 		return (NULL);
 	bl = find_block(alc, (int)size);
+	if (!bl)
+		return (NULL);
 	split_block(alc, bl, (int)size);
 	return (bl + HEAD_SIZE);
 }

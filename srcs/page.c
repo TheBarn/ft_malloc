@@ -6,22 +6,11 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/14 11:46:16 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/26 17:25:41 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/27 14:04:09 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
-
-extern t_dib	*g_dib;
-
-void	throw_error(char *msg)
-{
-	int		len;
-
-	len = ft_strlen(msg);
-	write(2, msg, len);
-//	exit(0);
-}
 
 void		copy_dib_value(t_dib *new_dib, int size, int offset)
 {
@@ -50,8 +39,7 @@ void		double_dib_size(void)
 	new_dib->small_nb = g_dib->small_nb;
 	new_dib->big_nb = g_dib->big_nb;
 	new_dib->size = g_dib->size * 2;
-	if (munmap(g_dib, (size / 2)) == -1)
-		throw_error("Error: could not unmap\n");
+	munmap(g_dib, (size / 2));
 	g_dib = new_dib;
 }
 
@@ -91,6 +79,5 @@ void		ini_dib(void)
 		dib->size = 1;
 		dib->nb_pg = 1;
 		g_dib = dib;
-//		print_header(NULL);
 	}
 }

@@ -6,13 +6,11 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/13 14:48:26 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/27 11:00:12 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/27 14:04:37 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
-
-extern t_dib	*g_dib;
 
 void	grow_block(t_alloc *alc, void *bl, int mem_size)
 {
@@ -36,7 +34,7 @@ void	grow_block(t_alloc *alc, void *bl, int mem_size)
 	}
 	write_header(tmp, 1, 0, mock_size);
 	split_block(alc, tmp, mem_size);
-	write_header(tmp, 0, 0,mem_size);
+	write_header(tmp, 0, 0, mem_size);
 }
 
 char	is_enough_padding_space(t_alloc *alc, void *bl, int mem_size)
@@ -56,9 +54,7 @@ char	is_enough_padding_space(t_alloc *alc, void *bl, int mem_size)
 		if (bud >= alc->zn + alc->size)
 			return (0);
 		bh = (t_head *)bud;
-		if (bh->sym != SYM)
-			throw_error("oupsie\n");
-		if (bh->free == 0)
+		if (bh->sym != SYM || bh->free == 0)
 			return (0);
 		bud_size = get_block_size(alc, bud);
 		if (bl_size != bud_size)
@@ -102,6 +98,17 @@ int		get_page_multi(size_t size)
 	return (multi);
 }
 
+void	*new_big_malloc(void *src, size_t size, size_t old_size)
+{
+	void	*ptr;
+
+	ptr = malloc(size);
+	if (!ptr)
+		return (NULL);
+	ft_memcpy(ptr, src, old_size);
+	return (ptr);
+}
+
 void	*realloc_big(void *src, size_t size)
 {
 	int			i;
@@ -122,18 +129,14 @@ void	*realloc_big(void *src, size_t size)
 			multi = get_page_multi(h->size + BIG_HEAD_SIZE);
 			if (size + BIG_HEAD_SIZE <= (size_t)(multi * getpagesize()))
 				return (src);
-			ptr = malloc(size);
-			if (!ptr)
-				return (NULL);
-			ft_memcpy(ptr, src, h->size);
-			return (ptr);
+			return (new_big_malloc(src, size, h->size));
 		}
 		i++;
 	}
 	return (NULL);
 }
 
-void	*realloc(void *src, size_t size)
+void	*ft_realloc(void *src, size_t size)
 {
 	void	*bl;
 	t_head	*h;
@@ -142,7 +145,6 @@ void	*realloc(void *src, size_t size)
 
 	if (!src)
 		return (malloc(size));
-	ini_dib();
 	ptr = realloc_big(src, size);
 	if (ptr)
 		return (ptr);
@@ -150,10 +152,7 @@ void	*realloc(void *src, size_t size)
 	bl = src - HEAD_SIZE;
 	h = (t_head *)bl;
 	if (!alc || h->sym != SYM || h->free != 0)
-	{
-		throw_error("Error: pointer being reallocated was not allocated\n");
 		return (NULL);
-	}
 	else
 	{
 		ptr = realloc_block(src, (int)size, alc, bl);

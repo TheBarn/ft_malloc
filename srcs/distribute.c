@@ -6,22 +6,20 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/14 09:40:07 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/27 10:52:57 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/27 14:00:42 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
 
-extern t_dib	*g_dib;
-
-int		ft_min(int a, int b)
+int			ft_min(int a, int b)
 {
 	if (a < b)
 		return (a);
 	return (b);
 }
 
-void	*ini_alloc(t_alloc *alc, char tiny)
+void		*ini_alloc(t_alloc *alc, char tiny)
 {
 	int		multi;
 
@@ -68,7 +66,7 @@ char		is_enough_mem_left(t_alloc *alc, int mem_size)
 	{
 		h = (t_head *)bl;
 		if (h->sym != SYM)
-			throw_error("ho ho\n");
+			return (0);
 		if (h->free == 1 && h->size >= mem_size)
 			return (1);
 		bl_size = get_block_size(alc, bl);

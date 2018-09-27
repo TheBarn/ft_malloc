@@ -6,13 +6,11 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/13 09:41:40 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/27 10:59:25 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/27 14:01:01 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
-
-extern t_dib	*g_dib;
 
 //TODO put static
 int		get_block_size(t_alloc *alc, void *bl)
@@ -63,10 +61,25 @@ char	get_side(t_alloc *alc, void *bl, int bl_size)
 	return (1 - side);
 }
 
+void	erase_bud(t_alloc *alc, void *bl, void *bud, int bl_size)
+{
+	void	*tmp;
+
+	if (bud < bl)
+	{
+		tmp = bl;
+		bl = bud;
+		bud = tmp;
+	}
+	ft_memset(bud, TRASH, HEAD_SIZE);
+	side = get_side(alc, bl, 2 * bl_size);
+	write_header(bl, 1, side, 2 * bl_size - HEAD_SIZE);
+	merge_bud(alc, bl);
+}
+
 void	merge_bud(t_alloc *alc, void *bl)
 {
 	void	*bud;
-	void	*tmp;
 	t_head	*bh;
 	int		bud_size;
 	int		bl_size;
@@ -74,23 +87,13 @@ void	merge_bud(t_alloc *alc, void *bl)
 
 	bud = find_buddy(alc, bl);
 	bh = (t_head *)bud;
-	if (bud < alc->zn + alc->size && bud >= alc->zn && bh->sym == SYM && bh->free == 1)
+	if (bud < alc->zn + alc->size && bud >= alc->zn \
+						&& bh->sym == SYM && bh->free == 1)
 	{
 		bl_size = get_block_size(alc, bl);
 		bud_size = get_block_size(alc, bud);
 		if (bud_size == bl_size)
-		{
-			if (bud < bl)
-			{
-				tmp = bl;
-				bl = bud;
-				bud = tmp;
-			}
-			ft_memset(bud, TRASH, HEAD_SIZE);
-			side = get_side(alc, bl, 2 * bl_size);
-			write_header(bl, 1, side, 2 * bl_size - HEAD_SIZE);
-			merge_bud(alc, bl);
-		}
+			erase_bud(alc, bl, bud, bl_size);
 	}
 }
 
@@ -140,7 +143,7 @@ t_alloc	*find_zone(void *ptr)
 	return (NULL);
 }
 
-void	free(void *ptr)
+void	ft_free(void *ptr)
 {
 	void	*bl;
 	t_head	*h;
@@ -148,17 +151,13 @@ void	free(void *ptr)
 
 	if (ptr)
 	{
-		ini_dib();
 		if (free_big(ptr))
 			return ;
 		alc = find_zone(ptr);
 		bl = ptr - HEAD_SIZE;
 		h = (t_head *)bl;
 		if (!alc || h->sym != SYM || h->free != 0)
-		{
-//			throw_error("Error: pointer being freed was not allocated\n");
 			return ;
-		}
 		h->free = 1;
 		merge_bud(alc, bl);
 	}

@@ -6,13 +6,11 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/18 17:23:07 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/27 09:47:32 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/27 14:05:45 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
-
-extern t_dib	*g_dib;
 
 void	ft_putptr_req(size_t ad)
 {
@@ -65,7 +63,7 @@ int		print_alc_mem(t_alloc *alc)
 	{
 		h = (t_head *)bl;
 		if (h->sym != SYM)
-			throw_error("not a block!!\n");
+			break;
 		if (h->free == 0)
 			tot += print_block_mem(bl);
 		bl_size = get_block_size(alc, bl);
@@ -85,7 +83,7 @@ void		print_alc_header(t_alloc *alc)
 	ft_putchar('\n');
 }
 
-t_alloc		*ft_ptr_min(t_alloc *a, t_alloc *b)
+void		*ft_ptr_min(void *a, void *b)
 {
 	if (!a && b)
 		return (b);
@@ -93,16 +91,51 @@ t_alloc		*ft_ptr_min(t_alloc *a, t_alloc *b)
 		return (a);
 	if (!a && !b)
 		return (NULL);
-	if ((void *)a < (void *)b)
+	if (a < b)
 		return (a);
 	return (b);
 }
 
-t_alloc		*next_alloc(void *pr)
+void		print_big(void *bl, size_t *tot)
+{
+	size_t	size;
+
+	ft_putstr("LARGE : ");
+	ft_putptr(bl);
+	ft_putchar('\n');
+	ft_putptr(bl + BIG_HEAD_SIZE);
+	ft_putstr(" - ");
+	size = ((t_big_head *)bl)->size;
+	ft_putptr(bl + BIG_HEAD_SIZE + size - 1);
+	ft_putstr(" : ");
+	ft_put_size_t(size);
+	ft_putstr(" octets\n");
+	(*tot) += size;
+}
+
+void		*get_next_big(void *pr)
+{
+	int		i;
+	void	*min_big;
+	void	*bl;
+
+	i = 0;
+	min_big = NULL;
+	while (i < g_dib->big_nb)
+	{
+		bl = g_dib->big_alc[i++];
+		if (bl > pr)
+			min_big = ft_ptr_min(bl, min_big);
+	}
+	return (min_big);
+}
+
+t_alloc		*next_alloc(void *pr, size_t *tot)
 {
 	int		i;
 	t_alloc	*alc;
 	t_alloc	*nx;
+	void	*big;
 
 	i = 0;
 	nx = NULL;
@@ -110,43 +143,36 @@ t_alloc		*next_alloc(void *pr)
 	{
 		alc = (t_alloc *)&(g_dib->tiny_alc[i++]);
 		if ((void *)alc > pr)
-			nx = ft_ptr_min(nx, alc);
+			nx = (t_alloc *)ft_ptr_min((void *)nx, (void *)alc);
 	}
 	i = 0;
 	while (i < g_dib->small_nb)
 	{
 		alc = (t_alloc *)&(g_dib->small_alc[i++]);
 		if ((void *)alc > pr)
-			nx = ft_ptr_min(nx, alc);
+			nx = (t_alloc *)ft_ptr_min((void *)nx, (void *)alc);
 	}
-	//special case for big !!
-	/*
-	i = 0;
-	while (i < g_dib->big_nb)
+	big = get_next_big(pr);
+	if (big && big < (void *)nx)
 	{
-		alc = (t_alloc *)&(g_dib->big_alc[i++]);
-		if ((void *)alc > pr)
-			nx = ft_ptr_min(nx, alc)
+		print_big(big, tot);
+		return (next_alloc(big, tot));
 	}
-	*/
 	return (nx);
 }
 
-void	show_alloc_mem()
+void	ft_show_alloc_mem()
 {
 	t_alloc		*alc;
 	size_t		tot;
 
 	tot = 0;
-	ft_putchar('\n');
-	ft_putptr(g_dib);
-	ft_putchar('\n');
-	alc = next_alloc(NULL);
+	alc = next_alloc(NULL, &tot);
 	while (alc)
 	{
 		print_alc_header(alc);
 		tot += (size_t)print_alc_mem(alc);
-		alc = next_alloc((void *)alc);
+		alc = next_alloc((void *)alc, &tot);
 	}
 	ft_putstr("Total : ");
 	ft_put_size_t(tot);

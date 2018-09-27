@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 09:07:48 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/27 10:05:42 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/27 12:18:47 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,30 +31,27 @@
 # include <sys/mman.h>
 # include <stdint.h>
 # include "typedef.h"
+# include <pthread.h>
 
-int		get_block_size(t_alloc *alc, void *bl);
-//int		sup_power_of_two(int nb);
-//size_t	power_of_two(int pow);
-//int		power_of_two_ind(int num);
-//size_t	sum_power_of_two(int start, int end);
-void	write_header(void *bl, char fr, char side, int bl_size);
+extern t_dib			*g_dib;
+extern pthread_mutex_t	g_mutex;
+
 void	*malloc(size_t size);
-//void	print_zone(t_alloc *alc, char *op, void *arg);
-void	*realloc(void *src, size_t size);
+void	*ft_malloc(size_t size);
 void	free(void *ptr);
+void	ft_free(void *ptr);
+void	*realloc(void *src, size_t size);
+void	*ft_realloc(void *src, size_t size);
+void	show_alloc_mem();
+void	ft_show_alloc_mem();
+int		get_block_size(t_alloc *alc, void *bl);
+void	write_header(void *bl, char fr, char side, int bl_size);
 t_alloc	*get_alloc_zone(int size);
 void	double_dib_size(void);
 void	ini_dib(void);
 t_alloc	*find_zone(void *ptr);
-//void	print_header(t_alloc *alc);
-//int		count_digit(int n);
 void	throw_error(char *msg);
-void	show_alloc_mem();
 void	ft_putptr(void *ptr);
-//void	show_dib_state(void);
-//void	show_zone_state(t_alloc *alc);
-//int		ft_max(int a, int b);
-//void	show_table_state(t_alloc *alc);
 void	*ft_mmap(size_t size);
 void	split_block(t_alloc *alc, void *bl, int mem_size);
 char	is_enough_dib_left(int nb);
