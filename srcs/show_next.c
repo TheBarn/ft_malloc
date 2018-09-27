@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/27 15:04:43 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/27 15:21:27 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/27 17:03:48 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ t_alloc			*next_alloc(void *pr, size_t *tot)
 	nx = find_min_alc(g_dib->tiny_alc, g_dib->tiny_nb, pr, nx);
 	nx = find_min_alc(g_dib->small_alc, g_dib->small_nb, pr, nx);
 	big = get_next_big(pr);
-	if (big && big < (void *)nx)
+	if (big && (!nx || big < (void *)nx))
 	{
 		print_big(big, tot);
 		return (next_alloc(big, tot));
