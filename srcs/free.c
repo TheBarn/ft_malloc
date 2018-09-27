@@ -6,14 +6,13 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/13 09:41:40 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/27 14:01:01 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/27 15:18:46 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
 
-//TODO put static
-int		get_block_size(t_alloc *alc, void *bl)
+int			get_block_size(t_alloc *alc, void *bl)
 {
 	t_head	*h;
 	int		size;
@@ -33,71 +32,7 @@ int		get_block_size(t_alloc *alc, void *bl)
 	return (tmp + offset);
 }
 
-void	*find_buddy(t_alloc *alc, void *bl)
-{
-	int		bl_size;
-	t_head	*h;
-	char	side;
-
-	bl_size = get_block_size(alc, bl);
-	h = (t_head *)bl;
-	side = h->side;
-	if (side == 0)
-		return (bl + bl_size);
-	return (bl - bl_size);
-}
-
-char	get_side(t_alloc *alc, void *bl, int bl_size)
-{
-	char	side;
-	void	*bud;
-	t_head	*bh;
-
-	if (bl + bl_size > alc->zn + alc->size)
-		return (1);
-	bud = bl + bl_size;
-	bh = (t_head *)bud;
-	side = bh->side;
-	return (1 - side);
-}
-
-void	erase_bud(t_alloc *alc, void *bl, void *bud, int bl_size)
-{
-	void	*tmp;
-
-	if (bud < bl)
-	{
-		tmp = bl;
-		bl = bud;
-		bud = tmp;
-	}
-	ft_memset(bud, TRASH, HEAD_SIZE);
-	side = get_side(alc, bl, 2 * bl_size);
-	write_header(bl, 1, side, 2 * bl_size - HEAD_SIZE);
-	merge_bud(alc, bl);
-}
-
-void	merge_bud(t_alloc *alc, void *bl)
-{
-	void	*bud;
-	t_head	*bh;
-	int		bud_size;
-	int		bl_size;
-	char	side;
-
-	bud = find_buddy(alc, bl);
-	bh = (t_head *)bud;
-	if (bud < alc->zn + alc->size && bud >= alc->zn \
-						&& bh->sym == SYM && bh->free == 1)
-	{
-		bl_size = get_block_size(alc, bl);
-		bud_size = get_block_size(alc, bud);
-		if (bud_size == bl_size)
-			erase_bud(alc, bl, bud, bl_size);
-	}
-}
-
-char	free_big(void *ptr)
+static char	free_big(void *ptr)
 {
 	int			i;
 	void		*bl;
@@ -119,7 +54,7 @@ char	free_big(void *ptr)
 	return (0);
 }
 
-t_alloc	*find_zone(void *ptr)
+t_alloc		*find_zone(void *ptr)
 {
 	t_alloc *alc;
 	int		i;
@@ -143,7 +78,7 @@ t_alloc	*find_zone(void *ptr)
 	return (NULL);
 }
 
-void	ft_free(void *ptr)
+void		ft_free(void *ptr)
 {
 	void	*bl;
 	t_head	*h;

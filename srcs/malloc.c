@@ -6,13 +6,13 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 09:07:14 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/27 14:03:33 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/27 15:17:47 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
 
-void	*find_block(t_alloc *alc, int mem_size)
+static void	*find_block(t_alloc *alc, int mem_size)
 {
 	void	*bl;
 	t_head	*h;
@@ -35,7 +35,7 @@ void	*find_block(t_alloc *alc, int mem_size)
 	return (NULL);
 }
 
-void	split_block(t_alloc *alc, void *bl, int mem_size)
+void		split_block(t_alloc *alc, void *bl, int mem_size)
 {
 	int		bl_size;
 	int		half_av_size;
@@ -58,7 +58,7 @@ void	split_block(t_alloc *alc, void *bl, int mem_size)
 	}
 }
 
-void	*ft_big_malloc(size_t size)
+static void	*ft_big_malloc(size_t size)
 {
 	void		*bl;
 	t_big_head	*h;
@@ -75,7 +75,7 @@ void	*ft_big_malloc(size_t size)
 	return (bl + BIG_HEAD_SIZE);
 }
 
-void	*ft_malloc(size_t size)
+void		*ft_malloc(size_t size)
 {
 	t_alloc *alc;
 	void	*bl;

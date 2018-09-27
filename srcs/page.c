@@ -6,14 +6,19 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/14 11:46:16 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/27 14:04:09 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/27 15:30:11 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
 
-void		copy_dib_value(t_dib *new_dib, int size, int offset)
+static void	copy_dib_value(t_dib *new_dib)
 {
+	int		size;
+	int		offset;
+
+	size = getpagesize() * g_dib->size;
+	offset = (int)sizeof(t_dib);
 	ft_memcpy(new_dib->tiny_alc, g_dib->tiny_alc, (size / 2 - offset) / 3);
 	ft_memcpy(new_dib->small_alc, g_dib->small_alc, (size / 2 - offset) / 3);
 	ft_memcpy(new_dib->big_alc, g_dib->big_alc, (size / 2 - offset) / 3);
@@ -35,6 +40,7 @@ void		double_dib_size(void)
 	new_dib->tiny_alc = (t_alloc *)(&pg[offset]);
 	new_dib->small_alc = (t_alloc *)(&pg[offset + left / 3]);
 	new_dib->big_alc = (void **)(&pg[offset + (left / 3) * 2]);
+	copy_dib_value(new_dib);
 	new_dib->tiny_nb = g_dib->tiny_nb;
 	new_dib->small_nb = g_dib->small_nb;
 	new_dib->big_nb = g_dib->big_nb;

@@ -6,7 +6,7 @@
 #    By: barnout <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/09/11 09:10:24 by barnout           #+#    #+#              #
-#    Updated: 2018/09/27 14:55:08 by barnout          ###   ########.fr        #
+#    Updated: 2018/09/27 15:11:15 by barnout          ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 
@@ -26,7 +26,7 @@ INC_DIR = ./includes
 C_FLAGS = -Wall -Wextra -Werror
 I_FLAGS = -I$(INC_DIR) -I$(LIBFT)
 SRC = malloc.c ini.c free.c realloc.c distribute.c page.c show_mem.c \
-			functions.c
+			functions.c merge.c realloc_big.c show_next.c utils.c
 O_DIR = ./objs
 S_DIR = ./srcs
 INCLUDES = malloc.h

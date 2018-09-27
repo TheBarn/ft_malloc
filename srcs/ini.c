@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/12 15:58:31 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/27 14:02:30 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/27 15:10:18 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,6 @@ void	*ft_mmap(size_t size)
 								MAP_ANON | MAP_PRIVATE, -1, 0);
 	if (!ptr)
 		write(2, "Error: mmap allocation: no space found\n", \
-			  ft_strlen("Error: mmap allocation: no space found\n"));
+				ft_strlen("Error: mmap allocation: no space found\n"));
 	return (ptr);
 }

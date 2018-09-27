@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 09:07:48 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/27 14:54:03 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/27 15:43:40 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,11 +50,14 @@ t_alloc	*get_alloc_zone(int size);
 void	double_dib_size(void);
 void	ini_dib(void);
 t_alloc	*find_zone(void *ptr);
-void	throw_error(char *msg);
 void	ft_putptr(void *ptr);
 void	*ft_mmap(size_t size);
 void	split_block(t_alloc *alc, void *bl, int mem_size);
 char	is_enough_dib_left(int nb);
 void	merge_bud(t_alloc *alc, void *bl);
+void	*realloc_big(void *src, size_t size);
+int		ft_min(int a, int b);
+void	ft_putptr(void *ptr);
+t_alloc	*next_alloc(void *pr, size_t *tot);
 
 #endif

@@ -6,20 +6,13 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/14 09:40:07 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/27 14:00:42 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/27 15:22:14 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
 
-int			ft_min(int a, int b)
-{
-	if (a < b)
-		return (a);
-	return (b);
-}
-
-void		*ini_alloc(t_alloc *alc, char tiny)
+static void		*ini_alloc(t_alloc *alc, char tiny)
 {
 	int		multi;
 
@@ -31,7 +24,7 @@ void		*ini_alloc(t_alloc *alc, char tiny)
 	return (alc->zn);
 }
 
-t_alloc		*make_new_zone(char tiny)
+static t_alloc	*make_new_zone(char tiny)
 {
 	int		nb;
 	t_alloc	*ar;
@@ -51,7 +44,7 @@ t_alloc		*make_new_zone(char tiny)
 	return (alc);
 }
 
-char		is_enough_mem_left(t_alloc *alc, int mem_size)
+static char		is_enough_mem_left(t_alloc *alc, int mem_size)
 {
 	int		i;
 	void	*bl;
@@ -77,7 +70,7 @@ char		is_enough_mem_left(t_alloc *alc, int mem_size)
 	return (0);
 }
 
-t_alloc		*get_zone(int size, char tiny)
+static t_alloc	*get_zone(int size, char tiny)
 {
 	t_alloc		*ar;
 	t_alloc		*alc;
@@ -106,7 +99,7 @@ t_alloc		*get_zone(int size, char tiny)
 	}
 }
 
-t_alloc		*get_alloc_zone(int size)
+t_alloc			*get_alloc_zone(int size)
 {
 	if (size <= 0 || size > SMALL_LIM)
 		return (NULL);

@@ -6,13 +6,13 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/13 14:48:26 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/27 14:04:37 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/27 15:19:40 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
 
-void	grow_block(t_alloc *alc, void *bl, int mem_size)
+static void	grow_block(t_alloc *alc, void *bl, int mem_size)
 {
 	int		bl_size;
 	int		mock_size;
@@ -37,7 +37,7 @@ void	grow_block(t_alloc *alc, void *bl, int mem_size)
 	write_header(tmp, 0, 0, mem_size);
 }
 
-char	is_enough_padding_space(t_alloc *alc, void *bl, int mem_size)
+static char	is_enough_padding_space(t_alloc *alc, void *bl, int mem_size)
 {
 	int		bl_size;
 	int		mock_size;
@@ -65,7 +65,7 @@ char	is_enough_padding_space(t_alloc *alc, void *bl, int mem_size)
 	return (1);
 }
 
-void	*realloc_block(void *src, int size, t_alloc *alc, void *bl)
+static void	*realloc_block(void *src, int size, t_alloc *alc, void *bl)
 {
 	int		bl_size;
 	void	*ptr;
@@ -86,57 +86,7 @@ void	*realloc_block(void *src, int size, t_alloc *alc, void *bl)
 	return (src);
 }
 
-int		get_page_multi(size_t size)
-{
-	int		multi;
-	int		pg_size;
-
-	multi = 1;
-	pg_size = getpagesize();
-	while ((size_t)(multi * pg_size) < size)
-		multi++;
-	return (multi);
-}
-
-void	*new_big_malloc(void *src, size_t size, size_t old_size)
-{
-	void	*ptr;
-
-	ptr = malloc(size);
-	if (!ptr)
-		return (NULL);
-	ft_memcpy(ptr, src, old_size);
-	return (ptr);
-}
-
-void	*realloc_big(void *src, size_t size)
-{
-	int			i;
-	void		*bl;
-	t_big_head	*h;
-	int			multi;
-	void		*ptr;
-
-	i = 0;
-	while (i < g_dib->big_nb)
-	{
-		bl = (g_dib->big_alc)[i];
-		if (bl && bl + BIG_HEAD_SIZE == src)
-		{
-			h = (t_big_head *)bl;
-			if (size <= h->size)
-				return (src);
-			multi = get_page_multi(h->size + BIG_HEAD_SIZE);
-			if (size + BIG_HEAD_SIZE <= (size_t)(multi * getpagesize()))
-				return (src);
-			return (new_big_malloc(src, size, h->size));
-		}
-		i++;
-	}
-	return (NULL);
-}
-
-void	*ft_realloc(void *src, size_t size)
+void		*ft_realloc(void *src, size_t size)
 {
 	void	*bl;
 	t_head	*h;
