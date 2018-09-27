@@ -6,7 +6,7 @@
 #    By: barnout <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/09/11 09:10:24 by barnout           #+#    #+#              #
-#    Updated: 2018/09/27 15:11:15 by barnout          ###   ########.fr        #
+#    Updated: 2018/09/27 16:08:40 by barnout          ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 
@@ -39,7 +39,7 @@ $(NAME): $(OBJ) $(DEP)
 	@make -C $(LIBFT)
 	@echo Compiling $(NAME) ...
 	@$(CC) -shared $(C_FLAGS) $(OBJ) $(LIBFT_A) -o $@ $(I_FLAGS)
-	$(shell ln -s $(NAME) $(LINK_NAME))
+	@$(shell ln -s $(NAME) $(LINK_NAME))
 	@echo $(C_GREEN)$(NAME) Compilation Completed$(C_RESET)
 
 clean:
