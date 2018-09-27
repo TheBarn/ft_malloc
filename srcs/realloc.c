@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/13 14:48:26 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/27 15:19:40 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/27 16:03:53 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,11 +75,11 @@ static void	*realloc_block(void *src, int size, t_alloc *alc, void *bl)
 		return (src);
 	if (!is_enough_padding_space(alc, bl, size))
 	{
-		ptr = malloc(size);
+		ptr = ft_malloc(size);
 		if (!ptr)
 			return (NULL);
 		ft_memcpy(ptr, src, bl_size - HEAD_SIZE);
-		free(src);
+		ft_free(src);
 		return (ptr);
 	}
 	grow_block(alc, bl, size);
@@ -94,7 +94,7 @@ void		*ft_realloc(void *src, size_t size)
 	t_alloc	*alc;
 
 	if (!src)
-		return (malloc(size));
+		return (ft_malloc(size));
 	ptr = realloc_big(src, size);
 	if (ptr)
 		return (ptr);

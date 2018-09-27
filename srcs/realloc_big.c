@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/27 15:09:34 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/27 15:15:08 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/27 16:01:34 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	*new_big_malloc(void *src, size_t size, size_t old_size)
 {
 	void	*ptr;
 
-	ptr = malloc(size);
+	ptr = ft_malloc(size);
 	if (!ptr)
 		return (NULL);
 	ft_memcpy(ptr, src, old_size);
