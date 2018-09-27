@@ -6,17 +6,17 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 09:07:48 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/27 15:43:40 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/27 17:13:28 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MALLOC_H
 # define MALLOC_H
 
-# define TINY_LIM 1200
+# define TINY_LIM 1024
 # define TINY_PG_MULTI 33
-# define SMALL_LIM 10500
-# define SMALL_PG_MULTI 257
+# define SMALL_LIM 32768
+# define SMALL_PG_MULTI 1025
 # define HEAD_SIZE ((int)sizeof(t_head))
 # define BIG_HEAD_SIZE ((int)sizeof(t_big_head))
 # define SYM '*'
