@@ -6,7 +6,7 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 09:07:48 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/27 12:18:47 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/27 14:54:03 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,8 @@ void	free(void *ptr);
 void	ft_free(void *ptr);
 void	*realloc(void *src, size_t size);
 void	*ft_realloc(void *src, size_t size);
-void	show_alloc_mem();
-void	ft_show_alloc_mem();
+void	show_alloc_mem(void);
+void	ft_show_alloc_mem(void);
 int		get_block_size(t_alloc *alc, void *bl);
 void	write_header(void *bl, char fr, char side, int bl_size);
 t_alloc	*get_alloc_zone(int size);
@@ -55,6 +55,6 @@ void	ft_putptr(void *ptr);
 void	*ft_mmap(size_t size);
 void	split_block(t_alloc *alc, void *bl, int mem_size);
 char	is_enough_dib_left(int nb);
-void	print_visu(t_alloc *alc);
+void	merge_bud(t_alloc *alc, void *bl);
 
 #endif

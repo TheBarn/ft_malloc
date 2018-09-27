@@ -6,14 +6,14 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/18 15:26:24 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/18 15:27:30 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/27 14:17:49 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 #include <unistd.h>
 
-void        ft_put_size_t(size_t n)
+void		ft_put_size_t(size_t n)
 {
 	if (n >= 10)
 	{

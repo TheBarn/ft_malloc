@@ -6,13 +6,13 @@
 /*   By: barnout <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/18 17:23:07 by barnout           #+#    #+#             */
-/*   Updated: 2018/09/27 14:05:45 by barnout          ###   ########.fr       */
+/*   Updated: 2018/09/27 14:54:49 by barnout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
 
-void	ft_putptr_req(size_t ad)
+void		ft_putptr_req(size_t ad)
 {
 	char	d;
 
@@ -25,7 +25,7 @@ void	ft_putptr_req(size_t ad)
 		ft_putchar('a' + d - 10);
 }
 
-void	ft_putptr(void *ptr)
+void		ft_putptr(void *ptr)
 {
 	size_t	ad;
 
@@ -34,7 +34,7 @@ void	ft_putptr(void *ptr)
 	ft_putptr_req(ad);
 }
 
-int		print_block_mem(void *bl)
+int			print_block_mem(void *bl)
 {
 	t_head	*h;
 
@@ -48,7 +48,7 @@ int		print_block_mem(void *bl)
 	return (h->size);
 }
 
-int		print_alc_mem(t_alloc *alc)
+int			print_alc_mem(t_alloc *alc)
 {
 	void	*bl;
 	t_head	*h;
@@ -63,7 +63,7 @@ int		print_alc_mem(t_alloc *alc)
 	{
 		h = (t_head *)bl;
 		if (h->sym != SYM)
-			break;
+			break ;
 		if (h->free == 0)
 			tot += print_block_mem(bl);
 		bl_size = get_block_size(alc, bl);
@@ -130,28 +130,29 @@ void		*get_next_big(void *pr)
 	return (min_big);
 }
 
-t_alloc		*next_alloc(void *pr, size_t *tot)
+t_alloc		*find_min_alc(t_alloc *ar, int nb, void *pr, void *nx)
 {
 	int		i;
 	t_alloc	*alc;
+
+	i = 0;
+	while (i < nb)
+	{
+		alc = (t_alloc *)&(ar[i++]);
+		if ((void *)alc > pr)
+			nx = (t_alloc *)ft_ptr_min((void *)nx, (void *)alc);
+	}
+	return (nx);
+}
+
+t_alloc		*next_alloc(void *pr, size_t *tot)
+{
 	t_alloc	*nx;
 	void	*big;
 
-	i = 0;
 	nx = NULL;
-	while (i < g_dib->tiny_nb)
-	{
-		alc = (t_alloc *)&(g_dib->tiny_alc[i++]);
-		if ((void *)alc > pr)
-			nx = (t_alloc *)ft_ptr_min((void *)nx, (void *)alc);
-	}
-	i = 0;
-	while (i < g_dib->small_nb)
-	{
-		alc = (t_alloc *)&(g_dib->small_alc[i++]);
-		if ((void *)alc > pr)
-			nx = (t_alloc *)ft_ptr_min((void *)nx, (void *)alc);
-	}
+	nx = find_min_alc(g_dib->tiny_alc, g_dib->tiny_nb, pr, nx);
+	nx = find_min_alc(g_dib->small_alc, g_dib->small_nb, pr, nx);
 	big = get_next_big(pr);
 	if (big && big < (void *)nx)
 	{
@@ -161,7 +162,7 @@ t_alloc		*next_alloc(void *pr, size_t *tot)
 	return (nx);
 }
 
-void	ft_show_alloc_mem()
+void		ft_show_alloc_mem(void)
 {
 	t_alloc		*alc;
 	size_t		tot;
